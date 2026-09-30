@@ -10,7 +10,11 @@ LIMPEZA = ("delete from escola_campanha where campanha_id = '30000000-0000-0000-
            "delete from escola where rede_id = '10000000-0000-0000-0000-000000000001' and co_inep not in (91000001, 91000002, 91000003);"
            "delete from campanha where slug = 'teste-sul-2';"
            "delete from auth.users where email in ('nova.escola@teste.org', 'x@teste.org', 'y@teste.org');"
-           "update perfil set ativo = true; delete from auditoria;")
+           "update perfil set ativo = true; delete from auditoria;"
+           "insert into escola_campanha (campanha_id, co_inep, in_amostra, qt_mat_6, qt_mat_9) values"
+           " ('30000000-0000-0000-0000-000000000001', 91000001, true, 40, 40), ('30000000-0000-0000-0000-000000000001', 91000002, true, 20, 20),"
+           " ('30000000-0000-0000-0000-000000000001', 91000003, false, 10, 10)"
+           " on conflict (campanha_id, co_inep) do update set in_amostra = excluded.in_amostra, qt_mat_6 = excluded.qt_mat_6, qt_mat_9 = excluded.qt_mat_9;")
 sql(LIMPEZA)
 
 with sync_playwright() as p:
@@ -23,7 +27,7 @@ with sync_playwright() as p:
     pg.get_by_text('20 escolas importadas; 19 na amostra.').wait_for()
     check('importa o plano de Natal (20 escolas, 19 na amostra)', True)
     check('mostra a escola substituída e o motivo', pg.get_by_text('ESC MUL PROF REGINALDO FERREIRA NETO saiu da amostra: Não possui Anos Finais.').is_visible())
-    check('estudante passa a ver as escolas novas na lista', int(sql("select jsonb_array_length(instrumento_da_campanha('teste-norte')->'escolas')")) == 23)
+    check('importar de novo substitui o plano (estudante vê só as 20 escolas do arquivo)', int(sql("select jsonb_array_length(instrumento_da_campanha('teste-norte')->'escolas')")) == 20)
     pg.screenshot(path=f'{OUT}/c1-configuracao.png', full_page=True)
 
     pg.goto(f'{BASE}/painel/nova'); pg.get_by_role('heading', name='Nova campanha').wait_for()
@@ -62,6 +66,14 @@ with sync_playwright() as p:
     check('função recusa gestor criando admin (403)', st == 403 and corpo.get('erro') == 'sem_permissao')
     st, corpo = pg.evaluate(chamar, {'email': 'y@teste.org', 'papel': 'escola', 'rede_id': '10000000-0000-0000-0000-000000000001', 'co_inep': 92000001})
     check('função recusa escola de outra rede e desfaz o convite', st == 400 and sql("select count(*) from auth.users where email = 'y@teste.org'") == '0')
+    # Convite duplicado: outro gestor convida o mesmo e-mail pendente — não pode apagar o usuário existente
+    pg_sul = entrar(b, 'gestor.sul@teste.org')
+    st, corpo = pg_sul.evaluate(chamar, {'email': 'nova.escola@teste.org', 'nome': 'Intruso', 'papel': 'escola',
+                                         'rede_id': '10000000-0000-0000-0000-000000000002', 'co_inep': 92000001})
+    check('convite duplicado é recusado (409)', st == 409 and corpo.get('erro') == 'email_ja_cadastrado')
+    check('usuário convidado antes continua existindo com o mesmo perfil',
+          sql("select papel || ':' || co_inep from perfil p join auth.users u on u.id = p.user_id where u.email = 'nova.escola@teste.org'") == 'escola:91000002')
+
     pg.locator('tr', has_text='Escola Alfa').get_by_role('button', name='Desativar').click()
     pg.get_by_text('Acesso desativado.').wait_for()
     check('desativa ponto focal da rede', sql("select ativo from perfil where user_id = '00000000-0000-0000-0000-00000000000e'") == 'f')

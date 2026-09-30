@@ -1,4 +1,4 @@
-import datetime, sys
+import datetime, re, sys
 # Teste de ponta a ponta do ambiente do estudante (Playwright). Requer: supabase start + npm run dev (porta 5173).
 # Uso: python3 e2e/estudante.py /tmp
 from playwright.sync_api import sync_playwright
@@ -70,6 +70,41 @@ with sync_playwright() as p:
     check('campanha fechada', True)
     pg2.goto(f'{BASE}/responder/nao-existe'); pg2.get_by_text('Link de pesquisa não encontrado').wait_for()
     check('link inexistente', True)
+
+    # Retomada quando o envio final falhou (todas as partes salvas, conclusão não chegou ao servidor)
+    pg3 = b.new_context(viewport={'width': 390, 'height': 844}).new_page()
+    pg3.goto(f'{BASE}/responder/teste-norte'); pg3.get_by_role('button', name='Começar').click()
+    pg3.get_by_role('button', name='Sim, aceito participar').click()
+    pg3.get_by_label('Nome completo').fill('Lia Moraes'); pg3.get_by_label('Sua escola').select_option(label='EM BETA')
+    pg3.get_by_label('9º ano').check(); pg3.get_by_label('Data de nascimento').fill('2012-03-01')
+    pg3.get_by_role('button', name='Começar o questionário').click(); pg3.get_by_text('Parte 1 de 4').wait_for()
+    pg3.get_by_label('Preta').check(); pg3.get_by_label('Não').check(); pg3.get_by_role('button', name='Salvar e continuar').click()
+    pg3.get_by_text('Parte 2 de 4').wait_for()
+    for fs in pg3.locator('fieldset').all(): fs.get_by_label('Concordo', exact=True).check()
+    pg3.get_by_role('button', name='Salvar e continuar').click(); pg3.get_by_text('Parte 3 de 4').wait_for()
+    pg3.get_by_label('Concordo', exact=True).check(); pg3.get_by_role('button', name='Salvar e continuar').click()
+    pg3.get_by_text('Parte 4 de 4').wait_for()
+    pg3.route('**/rest/v1/rpc/concluir', lambda rota: rota.abort())
+    pg3.get_by_role('button', name='Enviar respostas').click()
+    pg3.get_by_text('Não foi possível salvar').wait_for()
+    pg3.unroute('**/rest/v1/rpc/concluir')
+    pg3.reload(); pg3.get_by_role('button', name='Continuar de onde parei').click()
+    pg3.get_by_role('heading', name='Obrigado por participar!').wait_for(timeout=10000)
+    check('retomada conclui quando todas as partes já estavam salvas', True)
+
+    # Aparelho compartilhado: outro estudante começa a própria resposta
+    pg4 = b.new_context(viewport={'width': 390, 'height': 844}).new_page()
+    pg4.goto(f'{BASE}/responder/teste-norte'); pg4.get_by_role('button', name='Começar').click()
+    pg4.get_by_role('button', name='Sim, aceito participar').click()
+    pg4.get_by_label('Nome completo').fill('Caio Prado'); pg4.get_by_label('Sua escola').select_option(label='EM BETA')
+    pg4.get_by_label('9º ano').check(); pg4.get_by_label('Data de nascimento').fill('2012-03-01')
+    pg4.get_by_role('button', name='Começar o questionário').click(); pg4.get_by_text('Parte 1 de 4').wait_for()
+    pg4.goto(f'{BASE}/responder/teste-norte')
+    pg4.get_by_role('heading', name='Olá!').wait_for()
+    check('boas-vindas oferece nova resposta a outro estudante', pg4.get_by_role('button', name='Não sou eu: nova resposta').is_visible())
+    check('não há caminho que pule o termo de assentimento', pg4.get_by_role('button', name=re.compile('Já comecei antes')).count() == 0)
+    pg4.get_by_role('button', name='Não sou eu: nova resposta').click()
+    check('nova resposta começa pelo termo de assentimento', pg4.get_by_role('heading', name='Você aceita participar?').is_visible())
 
     lab = b.new_context(viewport={'width': 1280, 'height': 900}).new_page()
     lab.goto(f'{BASE}/responder/teste-norte'); lab.get_by_role('heading', name='Olá!').wait_for()

@@ -16,8 +16,8 @@ src/
   lib/           cliente Supabase e matriz de capacidades por perfil
   design-system/ tokens.css, components.css, assets (cópia de ../design-system)
 supabase/
-  migrations/    001–007 estrutura (iguais a ../database/001), 008 questionário EPF 2026, 009 redes
-  tests/         pgTAP (78 verificações)
+  migrations/    001–007 estrutura (iguais a ../database/001), 008 questionário EPF 2026, 009 redes, 010 correções (= ../database/003)
+  tests/         pgTAP (92 verificações)
   functions/     convidar-usuario (Edge Function)
   seed.sql       dados de teste locais (Rede Norte/Sul, usuários @teste.org)
 scripts/         testar-banco.sh, gerar-instrumento.ts, extrair-secao.py
@@ -43,24 +43,25 @@ Usuários de teste (entre pelo link que chega no Mailpit): `admin@`, `pesquisa@`
 
 ```bash
 npm test                   # unitários (Vitest): regras de cadastro, ramificação, capacidades, relatório, plano amostral, gerador
-scripts/testar-banco.sh    # banco (pgTAP) num Postgres descartável: 78 verificações
-e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 13 + 15 + 14 verificações
+scripts/testar-banco.sh    # banco (pgTAP) num Postgres descartável: 92 verificações
+e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 17 + 15 + 16 verificações
 npm run build
 ```
 
 ## Implantação no Supabase autohospedado
 
-O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as redes por `002_dados_iniciais.sql`. Isso equivale às migrações 001–007 e 009 deste projeto. Falta aplicar o questionário.
+O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as redes por `002_dados_iniciais.sql`. Isso equivale às migrações 001–007 e 009 deste projeto. Faltam as correções da revisão (010) e o questionário (008).
 
 **Antes de tudo:** troque `JWT_SECRET`, `ANON_KEY`, `SERVICE_ROLE_KEY` e as outras credenciais de exemplo do `.env` do Supabase. As chaves que estão no servidor foram assinadas com o segredo público da documentação. Detalhes em `../database/modelo-de-dados.md` §7.
 
-1. **Questionário EPF 2026** (conexão direta na porta 5432, como `postgres`):
+1. **Correções da revisão e questionário EPF 2026** (conexão direta na porta 5432, como `postgres`):
    ```bash
+   psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f ../database/003_correcoes_revisao.sql
    psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f supabase/migrations/20260929000008_instrumento_epf2026.sql
    ```
 2. **Histórico de migrações**, para `supabase db push` futuros não reaplicarem o que já existe:
    ```bash
-   npx supabase migration repair --db-url "$DATABASE_URL" --status applied 20260929000001 20260929000002 20260929000003 20260929000004 20260929000005 20260929000006 20260929000007 20260929000008 20260929000009
+   npx supabase migration repair --db-url "$DATABASE_URL" --status applied 20260929000001 20260929000002 20260929000003 20260929000004 20260929000005 20260929000006 20260929000007 20260929000008 20260929000009 20260930000010
    ```
 3. **Edge Function:** copie `supabase/functions/convidar-usuario/` para `volumes/functions/` do docker-compose do Supabase e defina `SITE_URL=https://<domínio da plataforma>` no serviço `functions`.
 4. **Auth:** `SITE_URL=https://<domínio>`, `ADDITIONAL_REDIRECT_URLS=https://<domínio>/painel`, `DISABLE_SIGNUP=true` e SMTP real.

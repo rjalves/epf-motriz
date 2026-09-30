@@ -41,8 +41,17 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
       regional_id: novo.papel === 'regional' ? novo.regional_id : null,
       co_inep: novo.papel === 'escola' ? Number(novo.co_inep) : null } })
     setEnviando(false)
-    setAviso(error ? { tipo: 'erro', texto: `Não foi possível convidar: ${error.message}` } : { tipo: 'sucesso', texto: `Convite enviado para ${novo.email}.` })
-    if (!error) { setNovo({ ...novo, email: '', nome: '' }); carregar() }
+    if (error) {
+      const motivo = await (error as { context?: Response }).context?.json().then((j) => j.erro as string).catch(() => null)
+      const TEXTO: Record<string, string> = {
+        email_ja_cadastrado: 'este e-mail já tem acesso ou um convite pendente',
+        sem_permissao: 'seu perfil não pode convidar para este perfil ou rede',
+        escopo_incoerente: 'a escola ou regional não pertence à rede escolhida',
+      }
+      return setAviso({ tipo: 'erro', texto: `Não foi possível convidar: ${(motivo && TEXTO[motivo]) ?? motivo ?? error.message}.` })
+    }
+    setAviso({ tipo: 'sucesso', texto: `Convite enviado para ${novo.email}.` })
+    setNovo({ ...novo, email: '', nome: '' }); carregar()
   }
 
   async function definirAtivo(l: Linha, ativo: boolean) {

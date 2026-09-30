@@ -36,9 +36,23 @@ export default function Responder() {
   const bloco = blocos[indice]
   const irPara = (t: Tela) => { setAviso(null); setTela(t); window.scrollTo(0, 0) }
 
-  function entrar(s: Sessao) {
+  // Erros que encerram a sessão guardada neste aparelho: não adianta tentar retomá-la.
+  const encerraSessao = (texto: string) => /expirou|já foi enviada|já respondeu/.test(texto)
+
+  async function entrar(s: Sessao) {
     setSessao(s)
-    setIndice(proximoBloco(blocosDaSerie(dados!.blocos, s.serie), s.blocos_salvos))
+    const partes = blocosDaSerie(dados!.blocos, s.serie)
+    const proximo = proximoBloco(partes, s.blocos_salvos)
+    if (proximo >= partes.length) {
+      // Todas as partes já estavam salvas: faltou só o envio final (ex.: a internet caiu nessa hora).
+      try { await concluir(slug, s); irPara('fim') } catch (e) {
+        const texto = (e as Error).message
+        if (encerraSessao(texto)) esquecerSessao(slug)
+        setAviso({ tipo: 'erro', texto })
+      }
+      return
+    }
+    setIndice(proximo)
     irPara('bloco')
     if (s.blocos_salvos.length) setAviso({ tipo: 'atencao', texto: 'Que bom que você voltou! Suas respostas estão guardadas. Continuando de onde você parou.' })
   }
@@ -59,7 +73,7 @@ export default function Responder() {
       else { await concluir(slug, s); irPara('fim') }
     } catch (e) {
       const texto = (e as Error).message
-      if (texto.includes('expirou')) esquecerSessao(slug)
+      if (encerraSessao(texto)) esquecerSessao(slug)
       setAviso({ tipo: 'erro', texto })
     } finally { setSalvando(false) }
   }
@@ -97,7 +111,12 @@ export default function Responder() {
             <button className="epf-btn epf-btn--destaque epf-btn--g epf-btn--bloco" onClick={() => (guardada ? entrar(guardada) : irPara('assentimento'))}>
               {guardada ? 'Continuar de onde parei' : 'Começar'}
             </button>
-            {!guardada && <button className="epf-btn epf-btn--inv epf-btn--g epf-btn--bloco" onClick={() => irPara('cadastro')}>Já comecei antes: continuar</button>}
+            {guardada && (
+              <button className="epf-btn epf-btn--inv epf-btn--g epf-btn--bloco" onClick={() => { esquecerSessao(slug); setSessao(null); setRespostas({}); irPara('assentimento') }}>
+                Não sou eu: nova resposta
+              </button>
+            )}
+            {!guardada && <p style={{ fontSize: 14, textAlign: 'center' }}>Já começou antes? Toque em Começar e informe os mesmos dados: você continua de onde parou.</p>}
           </>) : (
             <div className="epf-aviso epf-aviso--info" role="status">
               {dados.campanha.situacao === 'nao_iniciada' ? 'A pesquisa ainda não começou.' : 'A pesquisa está encerrada. Obrigado!'}

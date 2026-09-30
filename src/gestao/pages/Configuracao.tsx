@@ -1,29 +1,12 @@
 import { useCallback, useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { sb } from '../../lib/supabase'
-import { lerPlanoAmostral, type EscolaAmostra } from '../amostra'
+import { lerPlanoAmostral } from '../amostra'
 import LinkPesquisa from './LinkPesquisa'
 
 type Campanha = { id?: string; rede_id: string; numero: number; slug: string; instrumento_versao_id: string
   janela_inicio: string; janela_fim: string; aberta: boolean; series: number[] }
 type Aviso = { tipo: 'sucesso' | 'erro' | 'atencao'; texto: string } | null
-
-async function enviarAmostra(redeId: string, campanhaId: string, escolas: EscolaAmostra[]) {
-  const nomes = [...new Set(escolas.map((e) => e.regional).filter((r): r is string => !!r))]
-  const regionais = new Map<string, string>()
-  if (nomes.length) {
-    const { data, error } = await sb.from('regional').upsert(nomes.map((nome) => ({ rede_id: redeId, nome })), { onConflict: 'rede_id,nome' }).select('id,nome')
-    if (error) throw new Error(error.message)
-    data.forEach((r) => regionais.set(r.nome, r.id))
-  }
-  const up = async (t: string, linhas: object[], onConflict: string) => {
-    const { error } = await sb.from(t).upsert(linhas, { onConflict }); if (error) throw new Error(`${t}: ${error.message}`)
-  }
-  await up('escola', escolas.map((e) => ({ co_inep: e.co_inep, rede_id: redeId, regional_id: e.regional ? regionais.get(e.regional) : null,
-    nome: e.nome, municipio: e.municipio, eti: e.eti, localizacao: e.localizacao, pct_ppi: e.pct_ppi, latitude: e.latitude, longitude: e.longitude })), 'co_inep')
-  await up('escola_campanha', escolas.map((e) => ({ campanha_id: campanhaId, co_inep: e.co_inep, in_amostra: e.in_amostra, categoria: e.categoria,
-    qt_mat_6: e.qt_mat_6, qt_mat_9: e.qt_mat_9, turmas_6: e.turmas_6, turmas_9: e.turmas_9, parecer: e.parecer, justificativa: e.justificativa })), 'campanha_id,co_inep')
-}
 
 export default function Configuracao() {
   const { id } = useParams()
@@ -75,9 +58,12 @@ export default function Configuracao() {
       setAviso({ tipo: 'atencao', texto: 'Lendo arquivo…' })
       if (tipo === 'amostra') {
         const escolas = lerPlanoAmostral(await f.arrayBuffer())
-        await enviarAmostra(c!.rede_id, id!, escolas)
+        const { data, error } = await sb.rpc('importar_plano', { p_campanha: id, p_escolas: escolas })
+        if (error) throw new Error(error.message.startsWith('escola_de_outra_rede')
+          ? `a escola INEP ${error.message.split(': ')[1]} pertence a outra rede; confira o arquivo` : error.message)
         await carregarPlano()
-        setAviso({ tipo: 'sucesso', texto: `${escolas.length} escolas importadas; ${escolas.filter((x) => x.in_amostra).length} na amostra.` })
+        const removidas = data.removidas ? ` ${data.removidas} escola(s) que não estão no arquivo saíram do plano.` : ''
+        setAviso({ tipo: 'sucesso', texto: `${escolas.length} escolas importadas; ${escolas.filter((x) => x.in_amostra).length} na amostra.${removidas}` })
       } else {
         const { error } = await sb.rpc('importar_instrumento', { p_nome: f.name.replace(/\.json$/, ''), p_def: JSON.parse(await f.text()) })
         if (error) throw new Error(error.message)

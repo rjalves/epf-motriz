@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { pode } from '../../lib/capacidades'
+import { buscarTodos } from '../../lib/paginar'
 import { sb } from '../../lib/supabase'
 import { csvEscolas, ordenarPorApoio, relatorioDiario, type EscolaStatus, type Resumo } from '../relatorio'
 import type { Perfil } from '../usePerfil'
@@ -26,13 +27,18 @@ export default function Painel({ perfil }: { perfil: Perfil }) {
   const [copiado, setCopiado] = useState(false)
 
   const carregar = useCallback(async () => {
-    const [r, e] = await Promise.all([
-      sb.from('v_campanha_resumo').select('*').eq('campanha_id', id!).single(),
-      sb.from('v_escola_status').select('*').eq('campanha_id', id!),
-    ])
-    const falha = r.error ?? e.error
-    if (falha) return setErro(falha.message)
-    setErro(""); setResumo(r.data); setEscolas(ordenarPorApoio(e.data ?? [])); setAtualizado(new Date())
+    try {
+      const [r, escolas] = await Promise.all([
+        sb.from('v_campanha_resumo').select('*').eq('campanha_id', id!).single(),
+        buscarTodos<Escola>(async (de, ate) => {
+          const { data, error } = await sb.from('v_escola_status').select('*').eq('campanha_id', id!).order('co_inep').range(de, ate)
+          if (error) throw new Error(error.message)
+          return data
+        }),
+      ])
+      if (r.error) throw new Error(r.error.message)
+      setErro(''); setResumo(r.data); setEscolas(ordenarPorApoio(escolas)); setAtualizado(new Date())
+    } catch (e) { setErro((e as Error).message) }
   }, [id])
   useEffect(() => { carregar(); const t = setInterval(carregar, 60_000); return () => clearInterval(t) }, [carregar])
 
@@ -42,9 +48,16 @@ export default function Painel({ perfil }: { perfil: Perfil }) {
   const visiveis = escolas.filter((e) => (!regional || e.regional === regional) && (!status || e.status === status))
 
   async function exportar() {
-    const { data, error } = await sb.from('v_resposta_export').select('*').eq('campanha', resumo!.slug)
-    if (error) return setErro(error.message)
-    baixar(`EPF_${resumo!.slug}_respostas.json`, JSON.stringify(data), 'application/json')
+    try {
+      const linhas = await buscarTodos(async (de, ate) => {
+        const { data, error } = await sb.from('v_resposta_export').select('*').eq('campanha', resumo!.slug).order('sessao').order('item').range(de, ate)
+        if (error) throw new Error(error.message)
+        return data
+      })
+      const { error } = await sb.rpc('registrar_exportacao', { p_campanha: resumo!.slug })
+      if (error) throw new Error(error.message)
+      baixar(`EPF_${resumo!.slug}_respostas.json`, JSON.stringify(linhas), 'application/json')
+    } catch (e) { setErro((e as Error).message) }
   }
 
   if (erro) return <div className="epf-aviso epf-aviso--erro" role="alert">Não foi possível carregar o painel: {erro} <button className="epf-btn epf-btn--secundario epf-btn--p" onClick={carregar}>Tentar de novo</button></div>

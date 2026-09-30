@@ -20,14 +20,20 @@ Deno.serve(async (req) => {
   if (!user || !pode) return json({ erro: 'sem_permissao' }, 403)
 
   const admin = createClient(URL, SERVICE)
+  // E-mail já cadastrado (ativo ou com convite pendente): recusa antes de chamar o Auth,
+  // que reenviaria o convite e devolveria o usuário existente.
+  const { data: existe, error: e0 } = await admin.rpc('email_ja_cadastrado', { p_email: email })
+  if (e0) return json({ erro: e0.message }, 500)
+  if (existe) return json({ erro: 'email_ja_cadastrado' }, 409)
+
   const { data: convite, error: e1 } = await admin.auth.admin.inviteUserByEmail(email, { redirectTo: `${SITE}/painel` })
   if (e1) return json({ erro: e1.message }, 400)
   const { error: e2 } = await admin.from('perfil').insert({
     user_id: convite.user.id, papel, nome, rede_id, regional_id, co_inep, criado_por: user.id,
   })
   if (e2) {
-    await admin.auth.admin.deleteUser(convite.user.id) // desfaz o convite se o escopo for incoerente
-    return json({ erro: e2.message }, 400)
+    await admin.auth.admin.deleteUser(convite.user.id) // desfaz o convite recém-criado se o escopo for incoerente
+    return json({ erro: e2.message.includes('escopo_incoerente') ? 'escopo_incoerente' : e2.message }, 400)
   }
   await admin.from('auditoria').insert({ user_id: user.id, acao: 'convidar_usuario', alvo: `${email} (${papel})` })
   return json({ ok: true }, 200)
