@@ -1,0 +1,286 @@
+/* ==========================================================================
+   EPF Design System — componentes
+   Requer tokens.css. Classes com prefixo .epf-, um nível de especificidade.
+   Estados vêm de atributos nativos (checked, disabled, aria-*), não de classes.
+   ========================================================================== */
+
+/* ---------- Layout ---------- */
+.epf-pagina { max-width: var(--epf-largura-max); margin: 0 auto; padding: 0 var(--epf-margem-desktop); }
+.epf-coluna-estudante { max-width: var(--epf-largura-estudante); margin: 0 auto; padding: var(--epf-e-6) var(--epf-margem-mobile) 120px; display: flex; flex-direction: column; gap: var(--epf-e-5); }
+.epf-pilha { display: flex; flex-direction: column; gap: var(--epf-e-4); }
+.epf-linha { display: flex; flex-wrap: wrap; align-items: center; gap: var(--epf-e-3); }
+@media (max-width: 768px) { .epf-pagina { padding: 0 var(--epf-margem-mobile); } }
+
+/* ---------- Assinatura: faixa tricolor ---------- */
+.epf-faixa { display: flex; height: var(--epf-faixa-g); }
+.epf-faixa::before, .epf-faixa::after, .epf-faixa > i { content: ""; flex: 1; }
+.epf-faixa::before { background: var(--epf-coral); }
+.epf-faixa > i { background: var(--epf-ambar); }
+.epf-faixa::after { background: var(--epf-teal); }
+.epf-faixa--p { height: var(--epf-faixa-p); }
+
+/* ---------- Marca ---------- */
+.epf-marca { display: inline-flex; align-items: center; gap: var(--epf-e-3); color: var(--epf-texto); text-decoration: none; }
+.epf-marca__simbolo { width: 46px; height: 28px; flex-shrink: 0; }
+.epf-marca__nome { font-weight: var(--epf-peso-extra); font-size: 20px; line-height: 1; }
+.epf-marca__descritor { display: block; margin-top: 3px; font-size: 12px; font-weight: var(--epf-peso-semi); color: var(--epf-texto-2); }
+.epf-marca--inv { color: var(--epf-texto-inv); }
+.epf-marca--inv .epf-marca__descritor { color: var(--epf-texto-inv-2); }
+
+/* ---------- Tipografia ---------- */
+.epf-display { margin: 0; font-size: var(--epf-t-display); line-height: var(--epf-lh-display); font-weight: var(--epf-peso-extra); letter-spacing: var(--epf-espaco-letra-display); }
+.epf-h1 { margin: 0; font-size: var(--epf-t-h1); line-height: var(--epf-lh-h1); font-weight: var(--epf-peso-extra); letter-spacing: var(--epf-espaco-letra-titulo); }
+.epf-h2 { margin: 0; font-size: var(--epf-t-h2); line-height: var(--epf-lh-h2); font-weight: var(--epf-peso-extra); letter-spacing: var(--epf-espaco-letra-titulo); }
+.epf-h3 { margin: 0; font-size: var(--epf-t-h3); line-height: var(--epf-lh-h3); font-weight: var(--epf-peso-extra); }
+.epf-h4 { margin: 0; font-size: var(--epf-t-h4); line-height: var(--epf-lh-h4); font-weight: var(--epf-peso-forte); }
+.epf-h5 { margin: 0; font-size: var(--epf-t-h5); line-height: var(--epf-lh-h5); font-weight: var(--epf-peso-forte); }
+.epf-lead { margin: 0; font-size: var(--epf-t-corpo-g); line-height: var(--epf-lh-corpo-g); color: var(--epf-texto-2); max-width: 64ch; }
+.epf-texto-2 { color: var(--epf-texto-2); }
+.epf-legenda { font-size: var(--epf-t-legenda); line-height: var(--epf-lh-legenda); color: var(--epf-texto-2); }
+.epf-dado { font-size: var(--epf-t-dado); font-weight: var(--epf-peso-extra); line-height: 1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.epf-mono { font-family: var(--epf-fonte-mono); }
+@media (max-width: 768px) {
+  .epf-display { font-size: 48px; }
+  .epf-h1 { font-size: 34px; }
+  .epf-h2 { font-size: 30px; }
+  .epf-h3 { font-size: 26px; }
+}
+
+/* Sobrelinha: situa uma SEÇÃO. Uma por seção, nunca acima de cada cartão. */
+.epf-sobrelinha {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--epf-fonte-mono); font-size: var(--epf-t-sobrelinha); font-weight: var(--epf-peso-semi);
+  letter-spacing: var(--epf-espaco-letra-sobrelinha); text-transform: uppercase; color: var(--epf-teal-texto);
+}
+.epf-sobrelinha::before { content: ""; width: 18px; height: 3px; border-radius: 2px; background: var(--epf-coral); }
+.epf-sobre-noite .epf-sobrelinha { color: var(--epf-teal); }
+
+/* ---------- Botão ---------- */
+.epf-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--epf-e-2);
+  min-height: 48px; padding: 0 var(--epf-e-5); border-radius: var(--epf-r-controle);
+  border: var(--epf-b-controle) solid transparent;
+  font: var(--epf-peso-semi) 15px/1 var(--epf-fonte); text-decoration: none; cursor: pointer;
+  transition: background-color var(--epf-d-rapida) var(--epf-curva), border-color var(--epf-d-rapida) var(--epf-curva), transform var(--epf-d-rapida) var(--epf-curva);
+}
+.epf-btn:active { transform: translateY(1px); }
+.epf-btn:disabled, .epf-btn[aria-disabled="true"] { cursor: not-allowed; opacity: 0.5; transform: none; }
+.epf-btn[aria-busy="true"] { cursor: progress; }
+.epf-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.epf-btn--primario { background: var(--epf-noite); color: var(--epf-texto-inv); font-weight: var(--epf-peso-forte); }
+.epf-btn--primario:hover { background: var(--epf-noite-2); }
+.epf-btn--destaque { background: var(--epf-ambar); color: var(--epf-noite); font-weight: var(--epf-peso-forte); }
+.epf-btn--destaque:hover { background: #FFCF5C; }
+.epf-btn--secundario { background: var(--epf-papel); color: var(--epf-noite); border-color: var(--epf-borda-controle); }
+.epf-btn--secundario:hover { background: var(--epf-painel); }
+.epf-btn--fantasma { background: transparent; color: var(--epf-teal-texto); padding: 0 var(--epf-e-3); }
+.epf-btn--fantasma:hover { background: var(--epf-status-concluida-fundo); }
+.epf-btn--inv { background: transparent; color: var(--epf-texto-inv); border-color: #4D6A88; }
+.epf-btn--inv:hover { background: var(--epf-noite-2); }
+.epf-btn--g { min-height: var(--epf-alvo-estudante); padding: 0 var(--epf-e-7); border-radius: var(--epf-r-opcao); font-size: 17px; }
+.epf-btn--p { min-height: var(--epf-alvo-min); padding: 0 var(--epf-e-4); border-radius: var(--epf-r-campo); font-size: 14px; }
+.epf-btn--bloco { width: 100%; }
+.epf-btn--icone { width: var(--epf-alvo-estudante); padding: 0; }
+
+.epf-link { color: var(--epf-teal-texto); font-weight: var(--epf-peso-semi); text-underline-offset: 3px; }
+.epf-link:hover { color: var(--epf-noite); }
+
+/* ---------- Campo ---------- */
+.epf-campo { display: flex; flex-direction: column; gap: 6px; font-size: var(--epf-t-corpo); font-weight: var(--epf-peso-semi); }
+.epf-campo__opcional { font-weight: var(--epf-peso-normal); font-size: var(--epf-t-corpo-p); color: var(--epf-texto-2); margin-left: 6px; }
+.epf-campo__ajuda { font-weight: var(--epf-peso-normal); font-size: var(--epf-t-legenda); color: var(--epf-texto-2); }
+.epf-campo__erro { display: flex; gap: 6px; align-items: flex-start; font-weight: var(--epf-peso-normal); font-size: var(--epf-t-corpo-p); color: var(--epf-erro); }
+.epf-campo__erro::before { content: "!"; flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; background: var(--epf-erro); color: var(--epf-texto-inv); font-size: 12px; font-weight: var(--epf-peso-forte); display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
+.epf-input, .epf-select, .epf-textarea {
+  width: 100%; min-height: 52px; padding: 0 14px;
+  border: var(--epf-b-controle) solid var(--epf-borda-controle); border-radius: var(--epf-r-controle);
+  background: var(--epf-papel); color: var(--epf-texto);
+  font: var(--epf-peso-normal) 17px/1.4 var(--epf-fonte);
+  transition: border-color var(--epf-d-rapida) var(--epf-curva);
+}
+.epf-textarea { min-height: 120px; padding: 12px 14px; resize: vertical; }
+.epf-input::placeholder, .epf-textarea::placeholder { color: var(--epf-texto-bloqueado); }
+.epf-input:hover, .epf-select:hover, .epf-textarea:hover { border-color: var(--epf-noite); }
+.epf-input[aria-invalid="true"], .epf-select[aria-invalid="true"], .epf-textarea[aria-invalid="true"] { border-color: var(--epf-erro); border-width: var(--epf-b-selecionado); }
+.epf-input--p, .epf-select--p { min-height: var(--epf-alvo-min); border-radius: var(--epf-r-campo); font-size: 15px; }
+
+/* ---------- Grupo de pergunta (fieldset) ---------- */
+.epf-grupo { border: 0; padding: 0; margin: 0; min-width: 0; display: flex; flex-direction: column; gap: var(--epf-e-2); }
+.epf-grupo__pergunta { padding: 0; margin-bottom: var(--epf-e-3); font-size: var(--epf-t-h5); line-height: var(--epf-lh-h5); font-weight: var(--epf-peso-forte); }
+.epf-grupo__orientacao { margin: 0 0 var(--epf-e-1); display: flex; justify-content: space-between; align-items: center; gap: var(--epf-e-3); font-size: var(--epf-t-corpo-p); color: var(--epf-texto-2); }
+.epf-grupo__contador { padding: 4px 10px; border-radius: var(--epf-r-pilula); background: var(--epf-noite); color: var(--epf-texto-inv); font-weight: var(--epf-peso-forte); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.epf-grupo[aria-invalid="true"] .epf-grupo__pergunta { color: var(--epf-erro); }
+
+/* ---------- Opção (radio/checkbox em cartão) ---------- */
+.epf-opcao {
+  display: flex; align-items: center; gap: 14px;
+  min-height: var(--epf-alvo-estudante); padding: 8px 16px;
+  border: var(--epf-b-controle) solid var(--epf-linha); border-radius: var(--epf-r-opcao);
+  background: var(--epf-papel); font-size: var(--epf-t-corpo); line-height: 1.35; cursor: pointer;
+  transition: border-color var(--epf-d-rapida) var(--epf-curva), background-color var(--epf-d-rapida) var(--epf-curva);
+}
+.epf-opcao:hover { border-color: var(--epf-borda-controle); }
+.epf-opcao input { flex-shrink: 0; width: 22px; height: 22px; margin: 0; accent-color: var(--epf-noite); }
+.epf-opcao:has(input:checked) { border: var(--epf-b-selecionado) solid var(--epf-noite); background: var(--epf-selecionado); font-weight: var(--epf-peso-forte); }
+.epf-opcao:has(input:disabled) { background: var(--epf-painel); color: var(--epf-texto-bloqueado); cursor: not-allowed; }
+.epf-opcao:has(input:focus-visible) { outline: 3px solid var(--epf-foco); outline-offset: 2px; }
+.epf-opcao__texto { flex: 1; }
+/* Indicador de intensidade da escala: reforço visual, o texto continua sendo a informação. */
+.epf-opcao__escala { display: inline-flex; gap: 3px; }
+.epf-opcao__escala i { width: 6px; height: 6px; border-radius: 50%; background: var(--epf-linha); }
+.epf-opcao__escala i.on { background: var(--epf-teal); }
+.epf-opcao--aviso { align-items: flex-start; padding: 16px; border: var(--epf-b-selecionado) solid var(--epf-ambar); background: #FFF8E6; font-size: 15px; line-height: 1.5; }
+
+/* Item que aparece por dependência (ex.: A9 = Sim mostra A9_1) */
+.epf-dependente { margin-left: var(--epf-e-5); animation: epf-surgir var(--epf-d-media) var(--epf-curva); }
+@keyframes epf-surgir { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Escala em grade (computador) ---------- */
+.epf-grade { width: 100%; border-collapse: collapse; background: var(--epf-papel); border: 1px solid var(--epf-linha); border-radius: var(--epf-r-cartao); overflow: hidden; }
+.epf-grade th { padding: 14px 8px; background: var(--epf-painel); font-size: var(--epf-t-legenda); font-weight: var(--epf-peso-semi); color: var(--epf-texto-2); text-align: center; vertical-align: bottom; }
+.epf-grade th:first-child, .epf-grade td:first-child { text-align: left; padding-left: 20px; }
+.epf-grade td { padding: 12px 8px; border-top: 1px solid var(--epf-linha-suave); text-align: center; font-size: var(--epf-t-corpo); }
+.epf-grade label { display: inline-flex; width: var(--epf-alvo-min); height: var(--epf-alvo-min); align-items: center; justify-content: center; cursor: pointer; }
+.epf-grade input { width: 22px; height: 22px; accent-color: var(--epf-noite); margin: 0; }
+.epf-grade tr[aria-invalid="true"] td { background: #FFF8E6; }
+
+/* ---------- Progresso ---------- */
+.epf-progresso { height: 8px; border-radius: var(--epf-r-pilula); background: var(--epf-trilho); overflow: hidden; }
+.epf-progresso > span { display: block; height: 100%; background: var(--epf-teal); transition: width var(--epf-d-lenta) var(--epf-curva); }
+.epf-progresso--g { height: 12px; }
+.epf-sobre-noite .epf-progresso { background: var(--epf-noite-linha); }
+
+/* Lista de partes (retomada e barra lateral do laboratório) */
+.epf-partes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.epf-partes li { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-bottom: 1px solid var(--epf-linha-suave); font-size: 15px; }
+.epf-partes li::before { content: attr(data-n); flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; font-weight: var(--epf-peso-forte); background: var(--epf-trilho); color: var(--epf-texto-2); }
+.epf-partes li[data-estado="feita"]::before { content: "✓"; background: var(--epf-teal-escuro); color: var(--epf-texto-inv); }
+.epf-partes li[aria-current="step"] { background: #FFF8E6; font-weight: var(--epf-peso-forte); }
+.epf-partes li[aria-current="step"]::before { background: var(--epf-ambar); color: var(--epf-noite); }
+
+/* ---------- Chip, filtro, papel ---------- */
+.epf-chip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: var(--epf-r-pilula); border: 1px solid var(--epf-linha); background: var(--epf-papel); font-size: var(--epf-t-corpo-p); }
+.epf-chip::before { content: none; }
+.epf-chip--engajamento { border: 1.5px solid var(--epf-coral); color: var(--epf-coral-texto); font-weight: var(--epf-peso-semi); }
+.epf-chip--pertencimento { border: 1.5px solid var(--epf-status-iniciada-marca); color: var(--epf-ambar-texto); font-weight: var(--epf-peso-semi); }
+.epf-chip--futuros { border: 1.5px solid var(--epf-teal); color: var(--epf-teal-texto); font-weight: var(--epf-peso-semi); }
+.epf-chip--noite { background: var(--epf-noite-2); border-color: var(--epf-noite-linha); color: var(--epf-texto-inv); }
+
+.epf-filtro { min-height: 40px; padding: 0 14px; border-radius: var(--epf-r-pilula); border: var(--epf-b-controle) solid var(--epf-borda-controle); background: var(--epf-papel); color: var(--epf-noite); font: var(--epf-peso-semi) 14px/1 var(--epf-fonte); cursor: pointer; }
+.epf-filtro[aria-pressed="true"] { background: var(--epf-noite); border-color: var(--epf-noite); color: var(--epf-texto-inv); }
+
+.epf-papel { display: inline-flex; padding: 6px 10px; border-radius: var(--epf-r-tag); font-family: var(--epf-fonte-mono); font-size: 12px; font-weight: var(--epf-peso-semi); letter-spacing: 0.06em; text-transform: uppercase; }
+.epf-papel--admin { background: var(--epf-status-concluida-fundo); color: var(--epf-teal-texto); }
+.epf-papel--gestor { background: var(--epf-status-iniciada-fundo); color: var(--epf-ambar-texto); }
+.epf-papel--regional { background: var(--epf-painel); color: var(--epf-noite); }
+.epf-papel--escola { background: var(--epf-selecionado); color: var(--epf-noite); }
+.epf-papel--pesquisador { background: var(--epf-status-nao-iniciada-fundo); color: var(--epf-coral-texto); }
+
+/* ---------- Status da escola ---------- */
+.epf-status { display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px; border-radius: var(--epf-r-pilula); font-size: var(--epf-t-legenda); font-weight: var(--epf-peso-semi); white-space: nowrap; }
+.epf-status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.epf-status--concluida { background: var(--epf-status-concluida-fundo); color: var(--epf-status-concluida-texto); }
+.epf-status--iniciada { background: var(--epf-status-iniciada-fundo); color: var(--epf-status-iniciada-texto); }
+.epf-status--nao-iniciada { background: var(--epf-status-nao-iniciada-fundo); color: var(--epf-status-nao-iniciada-texto); }
+.epf-status--fora { background: var(--epf-status-fora-fundo); color: var(--epf-status-fora-texto); }
+
+.epf-meta { display: flex; flex-direction: column; gap: 5px; font-variant-numeric: tabular-nums; }
+.epf-meta__barra { height: 6px; border-radius: var(--epf-r-pilula); background: var(--epf-trilho); overflow: hidden; }
+.epf-meta__barra > span { display: block; height: 100%; }
+.epf-meta--concluida .epf-meta__barra > span { background: var(--epf-status-concluida-marca); }
+.epf-meta--iniciada .epf-meta__barra > span { background: var(--epf-status-iniciada-marca); }
+.epf-meta--nao-iniciada .epf-meta__barra > span { background: var(--epf-status-nao-iniciada-marca); }
+
+/* Barra empilhada de status (quantas escolas em cada situação) */
+.epf-barra-status { display: flex; gap: 3px; height: 16px; border-radius: var(--epf-r-pilula); overflow: hidden; }
+.epf-barra-status > span:nth-child(1) { background: var(--epf-status-concluida-marca); }
+.epf-barra-status > span:nth-child(2) { background: var(--epf-status-iniciada-marca); }
+.epf-barra-status > span:nth-child(3) { background: var(--epf-status-nao-iniciada-marca); }
+
+/* ---------- Indicador (KPI) ---------- */
+.epf-kpi { background: var(--epf-papel); border: 1px solid var(--epf-linha); border-radius: var(--epf-r-cartao); padding: 24px 26px; display: flex; flex-direction: column; gap: 10px; }
+.epf-kpi__rotulo { font-size: var(--epf-t-corpo-p); font-weight: var(--epf-peso-semi); color: var(--epf-texto-2); }
+.epf-kpi__valor { font-size: var(--epf-t-dado); font-weight: var(--epf-peso-extra); line-height: 1; font-variant-numeric: tabular-nums; }
+.epf-kpi__nota { font-size: var(--epf-t-corpo-p); line-height: 1.5; color: var(--epf-texto-2); }
+.epf-kpi--destaque { background: var(--epf-noite); border-color: var(--epf-noite); color: var(--epf-texto-inv); }
+.epf-kpi--destaque .epf-kpi__rotulo { color: var(--epf-ambar); }
+.epf-kpi--destaque .epf-kpi__valor { font-size: var(--epf-t-dado-g); }
+.epf-kpi--destaque .epf-kpi__nota { color: var(--epf-texto-inv-2); }
+.epf-kpi--destaque .epf-progresso { background: var(--epf-noite-linha); }
+
+/* ---------- Cartão ---------- */
+.epf-cartao { background: var(--epf-papel); border: 1px solid var(--epf-linha); border-radius: var(--epf-r-cartao); padding: var(--epf-e-7); }
+.epf-cartao--painel { background: var(--epf-painel); }
+.epf-cartao--noite { background: var(--epf-noite); border-color: var(--epf-noite); color: var(--epf-texto-inv); }
+.epf-cartao--pilar { padding: 0; overflow: hidden; }
+.epf-cartao--pilar::before { content: ""; display: block; height: 8px; background: var(--epf-cor-pilar, var(--epf-teal)); }
+.epf-cartao--pilar > * { margin: var(--epf-e-8); }
+.epf-cartao--engajamento { --epf-cor-pilar: var(--epf-coral); }
+.epf-cartao--pertencimento { --epf-cor-pilar: var(--epf-ambar); }
+.epf-cartao--futuros { --epf-cor-pilar: var(--epf-teal); }
+
+/* ---------- Tabela de dados ---------- */
+.epf-tabela { width: 100%; border-collapse: collapse; background: var(--epf-papel); font-size: var(--epf-t-corpo-p); }
+.epf-tabela th { padding: 12px 16px; background: var(--epf-painel); text-align: left; font-family: var(--epf-fonte-mono); font-size: 11px; font-weight: var(--epf-peso-semi); letter-spacing: 0.08em; text-transform: uppercase; color: var(--epf-texto-2); }
+.epf-tabela td { padding: 12px 16px; border-top: 1px solid var(--epf-linha-suave); vertical-align: middle; }
+.epf-tabela .num { text-align: right; font-variant-numeric: tabular-nums; }
+.epf-tabela tbody tr:hover td { background: #FCFAF6; }
+.epf-tabela-moldura { border: 1px solid var(--epf-linha); border-radius: var(--epf-r-cartao); overflow: auto; }
+
+/* ---------- Aviso ---------- */
+.epf-aviso { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--epf-r-opcao); font-size: var(--epf-t-corpo-p); line-height: 1.55; }
+.epf-aviso svg { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; }
+.epf-aviso--info { background: var(--epf-info-fundo); color: var(--epf-info-texto); }
+.epf-aviso--sucesso { background: var(--epf-sucesso-fundo); color: var(--epf-sucesso-texto); }
+.epf-aviso--atencao { background: var(--epf-atencao-fundo); color: var(--epf-atencao-texto); }
+.epf-aviso--erro { background: var(--epf-erro-fundo); color: var(--epf-erro-texto); }
+
+/* Aviso temporário (toast) com ação de desfazer */
+.epf-toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: var(--epf-z-aviso); display: flex; align-items: center; gap: 16px; padding: 12px 12px 12px 18px; border-radius: var(--epf-r-controle); background: var(--epf-noite); color: var(--epf-texto-inv); font-size: var(--epf-t-corpo-p); box-shadow: var(--epf-sombra-folha); }
+.epf-toast .epf-btn { color: var(--epf-ambar); }
+.epf-toast .epf-btn:hover { background: var(--epf-noite-2); }
+
+/* ---------- Interruptor ---------- */
+.epf-switch { display: inline-flex; align-items: center; gap: 12px; background: none; border: 0; padding: 0; font: var(--epf-peso-forte) 16px var(--epf-fonte); color: var(--epf-texto); cursor: pointer; min-height: var(--epf-alvo-min); }
+.epf-switch__trilho { width: 56px; height: 32px; border-radius: var(--epf-r-pilula); padding: 3px; display: flex; background: var(--epf-texto-inv-3); transition: background-color var(--epf-d-media) var(--epf-curva); }
+.epf-switch__trilho::after { content: ""; width: 26px; height: 26px; border-radius: 50%; background: var(--epf-papel); transition: transform var(--epf-d-media) var(--epf-curva); }
+.epf-switch[aria-checked="true"] .epf-switch__trilho { background: var(--epf-teal-escuro); }
+.epf-switch[aria-checked="true"] .epf-switch__trilho::after { transform: translateX(24px); }
+
+/* ---------- Topo do painel ---------- */
+.epf-topo { position: sticky; top: 0; z-index: var(--epf-z-topo); height: var(--epf-altura-topo-app); display: flex; align-items: center; justify-content: space-between; gap: var(--epf-e-6); padding: 0 var(--epf-margem-desktop); background: var(--epf-papel); border-bottom: 1px solid var(--epf-linha); }
+.epf-topo__nav { display: flex; gap: var(--epf-e-2); }
+.epf-topo__nav a { padding: 10px 14px; border-radius: var(--epf-r-campo); color: var(--epf-noite); font-weight: var(--epf-peso-semi); font-size: 15px; text-decoration: none; }
+.epf-topo__nav a:hover { background: var(--epf-painel); }
+.epf-topo__nav a[aria-current="page"] { background: var(--epf-painel); }
+@media (max-width: 768px) { .epf-topo { padding: 0 var(--epf-margem-mobile); } }
+
+/* ---------- Rodapé fixo do estudante ---------- */
+.epf-rodape-fixo { position: sticky; bottom: 0; z-index: var(--epf-z-rodape-fixo); display: flex; gap: 10px; padding: 14px var(--epf-margem-mobile) 22px; background: var(--epf-papel); border-top: 1px solid var(--epf-linha); }
+.epf-rodape-fixo .epf-btn--primario { flex: 1; }
+
+/* ---------- Link da pesquisa ---------- */
+.epf-qr { display: flex; gap: var(--epf-e-7); align-items: center; }
+.epf-qr__imagem { flex-shrink: 0; width: 132px; height: 132px; padding: 6px; border: 1px solid var(--epf-linha); border-radius: var(--epf-r-campo); background: var(--epf-papel); }
+.epf-qr__url { font-family: var(--epf-fonte-mono); font-size: 15px; padding: 10px 14px; border-radius: var(--epf-r-campo); background: var(--epf-painel); word-break: break-all; }
+@media (max-width: 768px) { .epf-qr { flex-direction: column; align-items: stretch; text-align: center; } .epf-qr__imagem { align-self: center; width: 200px; height: 200px; } }
+
+/* ---------- Passos (sequência real: percurso da aplicação) ---------- */
+.epf-passos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--epf-e-4); counter-reset: passo; }
+.epf-passos li { counter-increment: passo; background: var(--epf-papel); border: 1px solid var(--epf-linha); border-radius: 16px; padding: 28px 24px; display: flex; flex-direction: column; gap: 14px; }
+.epf-passos li::before { content: counter(passo); width: 44px; height: 44px; border-radius: 50%; background: var(--epf-noite); color: var(--epf-texto-inv); display: flex; align-items: center; justify-content: center; font-weight: var(--epf-peso-forte); font-size: 18px; }
+.epf-passos li[aria-current="step"] { background: var(--epf-noite); color: var(--epf-texto-inv); }
+.epf-passos li[aria-current="step"]::before { background: var(--epf-ambar); color: var(--epf-noite); }
+
+/* ---------- Estados de tela ---------- */
+.epf-estado { display: flex; flex-direction: column; align-items: flex-start; gap: var(--epf-e-3); padding: var(--epf-e-10); border: 1.5px dashed var(--epf-linha); border-radius: var(--epf-r-cartao); background: var(--epf-papel); }
+.epf-esqueleto { border-radius: var(--epf-r-tag); background: linear-gradient(90deg, var(--epf-painel) 0%, var(--epf-trilho) 50%, var(--epf-painel) 100%); background-size: 200% 100%; animation: epf-brilho 1.4s linear infinite; }
+@keyframes epf-brilho { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) { .epf-esqueleto { animation: none; } .epf-dependente { animation: none; } }
+
+/* ---------- Superfície noite ---------- */
+.epf-sobre-noite { background: var(--epf-noite); color: var(--epf-texto-inv); }
+.epf-sobre-noite .epf-lead, .epf-sobre-noite .epf-texto-2 { color: var(--epf-texto-inv-2); }
+.epf-brilho-teal { position: relative; overflow: hidden; }
+.epf-brilho-teal::after { content: ""; position: absolute; right: -120px; bottom: -220px; width: 620px; height: 620px; border-radius: 50%; background: radial-gradient(circle, rgba(22, 184, 168, 0.32), rgba(22, 184, 168, 0) 70%); pointer-events: none; }

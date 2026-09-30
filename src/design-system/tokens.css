@@ -1,0 +1,183 @@
+/* ==========================================================================
+   EPF Design System — tokens
+   Fonte da verdade dos valores visuais. Espelhado em tokens.json.
+   Importe antes de components.css.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ---------- Cor: marca ---------- */
+  --epf-noite: #0E2640;          /* cor-mãe: texto, botão primário, superfícies escuras */
+  --epf-noite-2: #16324F;        /* painel sobre noite */
+  --epf-noite-linha: #26405C;    /* borda e trilho sobre noite */
+
+  /* ---------- Cor: pilares (só preenchimento e decoração; nunca texto sobre claro) ---------- */
+  --epf-coral: #FF6A3D;          /* Engajamento */
+  --epf-ambar: #FFC233;          /* Pertencimento */
+  --epf-teal: #16B8A8;           /* Futuros */
+  --epf-teal-escuro: #0E9C8E;    /* barras de progresso, check de conclusão */
+
+  /* Versões de texto dos pilares (contraste ≥ 4,5:1 sobre claro) */
+  --epf-coral-texto: #A33A14;
+  --epf-ambar-texto: #6B4800;
+  --epf-teal-texto: #0B6F65;
+
+  /* ---------- Cor: superfícies ---------- */
+  --epf-marfim: #FBF6EE;         /* fundo de página */
+  --epf-papel: #FFFFFF;          /* cartões, campos */
+  --epf-painel: #F7F3EB;         /* áreas de apoio, cabeçalho de tabela */
+  --epf-trilho: #EFEAE0;         /* fundo de barras de progresso */
+  --epf-selecionado: #EEF3F8;    /* opção marcada */
+
+  /* ---------- Cor: linhas ---------- */
+  --epf-linha: #E6E1D6;          /* divisórias e borda de cartão (decorativa) */
+  --epf-linha-suave: #EFEAE0;    /* divisórias internas de tabela */
+  --epf-borda-controle: #8C8676; /* borda de campos e botões secundários: 3,63:1 no branco */
+
+  /* ---------- Cor: texto ---------- */
+  --epf-texto: #0E2640;          /* 15,3:1 no branco */
+  --epf-texto-2: #4A5A6E;        /* secundário: 7,0:1 no branco, 6,4:1 no painel */
+  --epf-texto-3: #7E93AE;        /* só ≥ 24px ou decorativo: 3,2:1 */
+  --epf-texto-bloqueado: #5E6B7B;/* opção indisponível: 5,4:1 */
+  --epf-texto-inv: #FFFFFF;
+  --epf-texto-inv-2: #D5DEE8;    /* 11,3:1 na noite */
+  --epf-texto-inv-3: #9FB1C6;    /* 7,0:1 na noite */
+  --epf-teal-sobre-noite: #7FE0D6;
+
+  /* ---------- Cor: status da coleta (sempre com rótulo) ---------- */
+  --epf-status-concluida-fundo: #E3F6F3;
+  --epf-status-concluida-texto: #0B6F65;
+  --epf-status-concluida-marca: #0E9C8E;
+  --epf-status-iniciada-fundo: #FFF3D1;
+  --epf-status-iniciada-texto: #6B4800;
+  --epf-status-iniciada-marca: #E0A200;
+  --epf-status-nao-iniciada-fundo: #FFE6DD;
+  --epf-status-nao-iniciada-texto: #A33A14;
+  --epf-status-nao-iniciada-marca: #D9481C;
+  --epf-status-fora-fundo: #EEF1F4;
+  --epf-status-fora-texto: #4A5A6E;
+  --epf-status-fora-marca: #9FB1C6;
+
+  /* ---------- Cor: feedback ---------- */
+  --epf-info-fundo: #EEF3F8;     --epf-info-texto: #0E2640;
+  --epf-sucesso-fundo: #E3F6F3;  --epf-sucesso-texto: #0B4F48;
+  --epf-atencao-fundo: #FFF3D1;  --epf-atencao-texto: #6B4800;
+  --epf-erro-fundo: #FFE6DD;     --epf-erro-texto: #7A2A0E;
+  --epf-erro: #A33A14;
+
+  /* ---------- Foco ---------- */
+  --epf-foco: #0E9C8E;
+  --epf-foco-sobre-noite: #FFC233;
+
+  /* ---------- Tipografia ---------- */
+  --epf-fonte: 'Lexend', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --epf-fonte-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  --epf-peso-leve: 300;
+  --epf-peso-normal: 400;
+  --epf-peso-semi: 600;
+  --epf-peso-forte: 700;
+  --epf-peso-extra: 800;
+
+  /* escala: tamanho / altura de linha */
+  --epf-t-display: 80px;   --epf-lh-display: 1.02;
+  --epf-t-h1: 48px;        --epf-lh-h1: 1.08;
+  --epf-t-h2: 40px;        --epf-lh-h2: 1.1;
+  --epf-t-h3: 32px;        --epf-lh-h3: 1.12;
+  --epf-t-h4: 26px;        --epf-lh-h4: 1.2;
+  --epf-t-h5: 20px;        --epf-lh-h5: 1.35;
+  --epf-t-corpo-g: 18px;   --epf-lh-corpo-g: 1.55;
+  --epf-t-corpo: 16px;     --epf-lh-corpo: 1.6;
+  --epf-t-corpo-p: 14px;   --epf-lh-corpo-p: 1.5;
+  --epf-t-legenda: 13px;   --epf-lh-legenda: 1.45;
+  --epf-t-sobrelinha: 13px;
+  --epf-t-dado-g: 60px;    /* KPI principal */
+  --epf-t-dado: 44px;      /* KPI */
+  --epf-t-dado-p: 28px;    /* contagem em cartão */
+  --epf-t-estudante: 17px; /* corpo mínimo no ambiente do estudante */
+
+  --epf-espaco-letra-titulo: -0.02em;
+  --epf-espaco-letra-display: -0.025em;
+  --epf-espaco-letra-sobrelinha: 0.14em;
+
+  /* ---------- Espaçamento (base 4) ---------- */
+  --epf-e-1: 4px;
+  --epf-e-2: 8px;
+  --epf-e-3: 12px;
+  --epf-e-4: 16px;
+  --epf-e-5: 20px;
+  --epf-e-6: 24px;
+  --epf-e-7: 28px;
+  --epf-e-8: 32px;
+  --epf-e-10: 40px;
+  --epf-e-12: 48px;
+  --epf-e-16: 64px;
+  --epf-e-20: 80px;
+  --epf-e-24: 96px;
+  --epf-e-30: 120px;
+
+  /* ---------- Layout ---------- */
+  --epf-largura-max: 1280px;       /* conteúdo do painel e da landing */
+  --epf-largura-estudante: 640px;  /* coluna do questionário */
+  --epf-margem-desktop: 80px;
+  --epf-margem-mobile: 20px;
+  --epf-altura-topo-app: 72px;
+
+  /* ---------- Raios ---------- */
+  --epf-r-tag: 8px;        /* chips retangulares, papel do usuário */
+  --epf-r-campo: 10px;     /* campos e botões compactos do painel */
+  --epf-r-controle: 12px;  /* botões e campos padrão */
+  --epf-r-opcao: 14px;     /* opções e botões do estudante */
+  --epf-r-cartao: 18px;    /* cartões */
+  --epf-r-bloco: 28px;     /* seções de destaque (landing) */
+  --epf-r-pilula: 999px;
+
+  /* ---------- Bordas ---------- */
+  --epf-b-fina: 1px;
+  --epf-b-controle: 1.5px;
+  --epf-b-selecionado: 2px;
+
+  /* ---------- Elevação (uso raro: a marca é plana, com bordas) ---------- */
+  --epf-sombra-flutuante: 0 18px 40px rgba(14, 38, 64, 0.12); /* faixa de números sobreposta ao hero */
+  --epf-sombra-folha: 0 16px 46px rgba(14, 38, 64, 0.20);     /* documentos impressos, pré-visualização */
+
+  /* ---------- Faixa assinatura ---------- */
+  --epf-faixa-g: 6px;   /* landing e estudante */
+  --epf-faixa-p: 4px;   /* painel */
+
+  /* ---------- Alvos de toque ---------- */
+  --epf-alvo-min: 44px;        /* qualquer controle */
+  --epf-alvo-estudante: 56px;  /* botões e opções do estudante */
+
+  /* ---------- Movimento ---------- */
+  --epf-d-rapida: 120ms;   /* hover, pressão */
+  --epf-d-media: 200ms;    /* mudança de estado, aparecer item dependente */
+  --epf-d-lenta: 320ms;    /* barra de progresso */
+  --epf-curva: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* ---------- Camadas ---------- */
+  --epf-z-rodape-fixo: 10;
+  --epf-z-topo: 20;
+  --epf-z-aviso: 30;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --epf-d-rapida: 0ms; --epf-d-media: 0ms; --epf-d-lenta: 0ms; }
+}
+
+/* ---------- Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--epf-fonte);
+  font-size: var(--epf-t-corpo);
+  line-height: var(--epf-lh-corpo);
+  color: var(--epf-texto);
+  background: var(--epf-marfim);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+:focus-visible { outline: 3px solid var(--epf-foco); outline-offset: 2px; }
+.epf-sobre-noite :focus-visible { outline-color: var(--epf-foco-sobre-noite); }
