@@ -1,11 +1,36 @@
 -- Fixture de desenvolvimento e testes. Nada aqui vai para produção.
-insert into auth.users (id, email) values
+-- Usuários de teste. A stack completa (Auth) exige várias colunas preenchidas; o banco de teste
+-- isolado (supabase/postgres sem o serviço de Auth) tem um auth.users mínimo. Insere conforme o que existe.
+create temp table usuarios_teste (id uuid, email text);
+insert into usuarios_teste values
   ('00000000-0000-0000-0000-00000000000a', 'admin@teste.org'),
   ('00000000-0000-0000-0000-00000000000b', 'pesquisa@teste.org'),
   ('00000000-0000-0000-0000-00000000000c', 'gestor.norte@teste.org'),
   ('00000000-0000-0000-0000-00000000000d', 'regional.n1@teste.org'),
   ('00000000-0000-0000-0000-00000000000e', 'escola.alfa@teste.org'),
   ('00000000-0000-0000-0000-00000000000f', 'gestor.sul@teste.org');
+do $$
+begin
+  if exists (select 1 from information_schema.columns where table_schema = 'auth' and table_name = 'users' and column_name = 'email_confirmed_at') then
+    insert into auth.users (id, email, instance_id, aud, role, email_confirmed_at, created_at, updated_at,
+      raw_app_meta_data, raw_user_meta_data, confirmation_token, recovery_token, email_change_token_new, email_change)
+    select id, email, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', now(), now(), now(),
+      '{"provider":"email","providers":["email"]}', '{}', '', '', '', '' from usuarios_teste;
+  else
+    insert into auth.users (id, email) select id, email from usuarios_teste;
+  end if;
+end $$;
+drop table usuarios_teste;
+
+-- Identidade de e-mail para o login por link mágico na stack local (a tabela não existe no banco de teste isolado).
+do $$
+begin
+  if exists (select 1 from information_schema.columns where table_schema = 'auth' and table_name = 'identities' and column_name = 'provider_id') then
+    insert into auth.identities (provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+    select id::text, id, jsonb_build_object('sub', id::text, 'email', email, 'email_verified', true), 'email', now(), now(), now()
+    from auth.users where email like '%@teste.org';
+  end if;
+end $$;
 
 insert into rede (id, nome, uf) values
   ('10000000-0000-0000-0000-000000000001', 'Rede Norte', 'XX'),

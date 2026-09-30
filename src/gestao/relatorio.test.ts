@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { csvEscolas, relatorioDiario } from './relatorio'
+import { csvEscolas, ordenarPorApoio, relatorioDiario } from './relatorio'
 
 const resumo = { rede: 'Rede Exemplo', respondentes_amostra: 13, matriculas_amostra: 380, meta_total: 323, em_andamento: 7,
   escolas_amostra: 4, escolas_concluidas: 0, escolas_iniciadas: 4, escolas_nao_iniciadas: 0 }
@@ -22,5 +22,13 @@ describe('csvEscolas', () => {
     const csv = csvEscolas([{ co_inep: 1, nome: 'EM "A"', regional: 'Norte', status: 'iniciada', validos: 5, meta: 98, pct_meta: 0.051 }])
     expect(csv.startsWith('﻿"INEP";"Escola"')).toBe(true)
     expect(csv).toContain('"1";"EM ""A""";"Norte";"AMARELO";"5";"98";"5,1"')
+  })
+})
+
+describe('ordenarPorApoio', () => {
+  it('põe quem mais precisa de apoio primeiro e quem está fora da amostra por último', () => {
+    const e = (co_inep: number, status: string, pct_meta: number | null) => ({ co_inep, nome: String(co_inep), regional: '', status, validos: 0, meta: 0, pct_meta })
+    const ordem = ordenarPorApoio([e(1, 'fora_amostra', null), e(2, 'concluida', 1.2), e(3, 'iniciada', 0.4), e(4, 'nao_iniciada', 0)])
+    expect(ordem.map((x) => x.co_inep)).toEqual([4, 3, 2, 1])
   })
 })

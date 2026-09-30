@@ -35,3 +35,8 @@ export function csvEscolas(linhas: EscolaStatus[]): string {
     l.pct_meta == null ? '' : (l.pct_meta * 100).toFixed(1).replace('.', ',')].map(c).join(';'))
   return '﻿' + [cab.map(c).join(';'), ...corpo].join('\r\n')
 }
+
+// Ordem do painel: menor % da meta primeiro; escolas fora da amostra (sem meta) por último.
+export const ordenarPorApoio = <T extends EscolaStatus>(escolas: T[]): T[] =>
+  [...escolas].sort((a, b) =>
+    Number(a.status === 'fora_amostra') - Number(b.status === 'fora_amostra') || (a.pct_meta ?? 0) - (b.pct_meta ?? 0))
