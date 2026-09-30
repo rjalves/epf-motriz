@@ -153,7 +153,12 @@ export default function Responder() {
         {tela === 'bloco' && bloco && (<>
           <h1 className="epf-h3">{bloco.titulo}</h1>
           <BlocoForm bloco={bloco} respostas={respostas} faltando={faltando}
-            onMudar={(k, v) => { setRespostas((r) => ({ ...r, [k]: v })); setFaltando((f) => f.filter((x) => x !== k)) }} />
+            onMudar={(k, v) => {
+              setRespostas((r) => ({ ...r, [k]: v }))
+              const restantes = faltando.filter((x) => x !== k)
+              setFaltando(restantes)
+              if (!restantes.length && aviso?.tipo === 'atencao' && faltando.length) setAviso(null)
+            }} />
         </>)}
 
         {tela === 'fim' && (<>
