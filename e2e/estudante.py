@@ -1,7 +1,9 @@
 import datetime, sys
 # Teste de ponta a ponta do ambiente do estudante (Playwright). Requer: supabase start + npm run dev (porta 5173).
-# Uso: docker exec supabase_db_epf-monitor psql -U postgres -qc 'delete from participante; delete from sessao;' && python3 e2e/estudante.py /tmp
-from playwright.sync_api import sync_playwright, expect
+# Uso: python3 e2e/estudante.py /tmp
+from playwright.sync_api import sync_playwright
+from util import sql
+sql('delete from participante; delete from sessao;')
 BASE = 'http://localhost:5173'
 OUT = sys.argv[1]
 onze = (datetime.date.today().replace(year=datetime.date.today().year - 11) - datetime.timedelta(days=1)).isoformat()
@@ -74,3 +76,4 @@ with sync_playwright() as p:
     lab.screenshot(path=f'{OUT}/6-computador.png')
     b.close()
 print(f'{sum(1 for _, c in ok if c)}/{len(ok)} verificações')
+if not all(c for _, c in ok): raise SystemExit(1)

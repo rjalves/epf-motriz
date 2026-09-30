@@ -6,10 +6,12 @@ from util import BASE, agora, check, email_recebido, entrar, resumo, sql
 
 OUT = sys.argv[1]
 PLANO = os.path.join(os.path.dirname(__file__), '..', 'src', 'gestao', '__fixtures__', 'plano-natal.xlsx')
-sql("delete from escola_campanha where campanha_id = '30000000-0000-0000-0000-000000000001' and co_inep not in (91000001, 91000002, 91000003);"
-    "delete from campanha where slug = 'teste-sul-2';"
-    "delete from auth.users where email in ('nova.escola@teste.org', 'x@teste.org', 'y@teste.org');"
-    "update perfil set ativo = true; delete from auditoria;")
+LIMPEZA = ("delete from escola_campanha where campanha_id = '30000000-0000-0000-0000-000000000001' and co_inep not in (91000001, 91000002, 91000003);"
+           "delete from escola where rede_id = '10000000-0000-0000-0000-000000000001' and co_inep not in (91000001, 91000002, 91000003);"
+           "delete from campanha where slug = 'teste-sul-2';"
+           "delete from auth.users where email in ('nova.escola@teste.org', 'x@teste.org', 'y@teste.org');"
+           "update perfil set ativo = true; delete from auditoria;")
+sql(LIMPEZA)
 
 with sync_playwright() as p:
     b = p.chromium.launch()
@@ -67,4 +69,5 @@ with sync_playwright() as p:
     check('desfazer reativa', sql("select ativo from perfil where user_id = '00000000-0000-0000-0000-00000000000e'") == 't')
     pg.screenshot(path=f'{OUT}/c2-usuarios.png', full_page=True)
     b.close()
+sql(LIMPEZA)  # não deixa as escolas importadas afetarem os outros testes
 resumo()

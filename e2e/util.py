@@ -9,6 +9,7 @@ def check(nome, cond):
 
 def resumo():
     print(f'{sum(resultados)}/{len(resultados)} verificações')
+    if not all(resultados): raise SystemExit(1)
 
 def sql(q):
     return subprocess.run(['docker', 'exec', 'supabase_db_epf-monitor', 'psql', '-U', 'postgres', '-tAc', q],
