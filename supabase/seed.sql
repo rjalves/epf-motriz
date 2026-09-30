@@ -46,3 +46,14 @@ select _importar_instrumento('Teste v1', $j${"blocos":[
 ]}$j$::jsonb);
 -- id fixo para os testes (bloco.versao_id acompanha por on update cascade)
 update instrumento_versao set id = '40000000-0000-0000-0000-000000000001' where nome = 'Teste v1';
+
+insert into campanha (id, rede_id, numero, slug, instrumento_versao_id, janela_inicio, janela_fim, aberta) values
+  ('30000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 1, 'teste-norte',
+   '40000000-0000-0000-0000-000000000001', current_date - 1, current_date + 30, true),
+  ('30000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002', 1, 'teste-sul',
+   '40000000-0000-0000-0000-000000000001', current_date - 1, current_date + 30, false);
+insert into escola_campanha (campanha_id, co_inep, in_amostra, qt_mat_6, qt_mat_9) values
+  ('30000000-0000-0000-0000-000000000001', 91000001, true, 40, 40),
+  ('30000000-0000-0000-0000-000000000001', 91000002, true, 20, 20),
+  ('30000000-0000-0000-0000-000000000001', 91000003, false, 10, 10),
+  ('30000000-0000-0000-0000-000000000002', 92000001, true, 30, 30);
