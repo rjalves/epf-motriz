@@ -40,3 +40,8 @@
   .faixa-numeros > div + div { border-left: 0; border-top: 1px solid var(--epf-linha); }
   .topo-email { display: none; }
 }
+.grade-config { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.grade-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grade-usuarios { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 24px; align-items: start; }
+@media (max-width: 1024px) { .grade-config, .grade-usuarios { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .grade-campos { grid-template-columns: 1fr; } }

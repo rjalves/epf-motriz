@@ -1,34 +1,10 @@
 # Teste de ponta a ponta da área de gestão por perfil (Playwright + Mailpit local).
 # Requer: supabase start (portas 564xx) + npm run dev (porta 5173). Uso: python3 e2e/gestao.py /tmp
-import json, re, subprocess, sys, time, urllib.request
+import re, sys
 from playwright.sync_api import sync_playwright
+from util import check, entrar, resumo, sql
 
-BASE, MAIL, OUT = 'http://localhost:5173', 'http://127.0.0.1:56424', sys.argv[1]
-ok = []
-def check(nome, cond):
-    ok.append(bool(cond)); print(('OK   ' if cond else 'FALHA ') + nome)
-def sql(q):
-    subprocess.run(['docker', 'exec', 'supabase_db_epf-monitor', 'psql', '-U', 'postgres', '-qc', q], check=True, capture_output=True)
-
-def link_magico(email, desde):
-    for _ in range(40):
-        with urllib.request.urlopen(f'{MAIL}/api/v1/search?query=to:{email}') as r:
-            msgs = [m for m in json.load(r)['messages'] if m['Created'] > desde]
-        if msgs:
-            with urllib.request.urlopen(f"{MAIL}/api/v1/message/{msgs[0]['ID']}") as r:
-                texto = json.load(r)['Text']
-            return re.search(r'https?://\S+verify\S+', texto).group(0).replace('&amp;', '&')
-        time.sleep(0.5)
-    raise RuntimeError(f'e-mail não chegou para {email}')
-
-def entrar(b, email):
-    pg = b.new_context(viewport={'width': 1440, 'height': 900}, locale='pt-BR').new_page()
-    pg.goto(f'{BASE}/painel'); pg.get_by_label('E-mail institucional').fill(email)
-    desde = time.strftime('%Y-%m-%dT%H:%M:%S', time.gmtime(time.time() - 2))
-    pg.get_by_role('button', name='Receber link de acesso').click()
-    pg.get_by_text('Enviamos um link de acesso para o seu e-mail.').wait_for()
-    pg.goto(link_magico(email, desde)); pg.locator('.epf-topo').wait_for()
-    return pg
+OUT = sys.argv[1]
 
 # Dados de coleta: 30 concluídas no 6º de ALFA, 70 em BETA, 5 em andamento em ALFA
 sql("delete from participante; delete from sessao;")
@@ -79,4 +55,4 @@ with sync_playwright() as p:
     pg.get_by_role('heading', name='Campanhas de aplicação').wait_for(); pg.locator('table.epf-tabela').wait_for()
     check('gestor Sul não vê Rede Norte', 'Rede Norte' not in pg.content())
     b.close()
-print(f'{sum(ok)}/{len(ok)} verificações')
+resumo()
