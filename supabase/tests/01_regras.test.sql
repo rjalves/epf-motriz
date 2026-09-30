@@ -1,0 +1,11 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+set local search_path = public, extensions;
+select plan(5);
+select is(normaliza_texto('  em   centro '), 'EM CENTRO', 'trim, espaços e maiúsculas');
+select is(normaliza_texto('   '), null, 'vazio vira null');
+select is(normaliza_nome('  João  da   Conceição '), 'JOAO DA CONCEICAO', 'nome sem acento');
+select is(idade_em('2015-10-11', '2026-10-10'), 10, 'faz 11 só amanhã');
+select is(idade_em('2014-10-10', '2026-10-10'), 12, 'aniversário hoje');
+select * from finish();
+rollback;
