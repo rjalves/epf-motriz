@@ -90,12 +90,15 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    SMTP_ADMIN_EMAIL=nao-responda@epf.motriz.org
    SMTP_SENDER_NAME=EPF
    ```
-   E no serviço `auth` do docker-compose, para o e-mail trazer o código em vez de um link:
+   E no `environment:` do serviço `auth` no `docker-compose.yml` (o `.env` sozinho não chega ao contêiner), para o e-mail trazer o código, em português e com a identidade do EPF:
+   ```yaml
+   GOTRUE_MAILER_TEMPLATES_MAGIC_LINK: https://deploy-epf.9bkmfg.easypanel.host/emails/codigo-acesso.html
+   GOTRUE_MAILER_SUBJECTS_MAGIC_LINK: Seu código de acesso ao painel EPF
+   GOTRUE_MAILER_TEMPLATES_CONFIRMATION: https://deploy-epf.9bkmfg.easypanel.host/emails/codigo-acesso.html
+   GOTRUE_MAILER_SUBJECTS_CONFIRMATION: Seu código de acesso ao painel EPF
+   GOTRUE_MAILER_OTP_LENGTH: 6
    ```
-   GOTRUE_MAILER_TEMPLATES_MAGIC_LINK=https://deploy-epf.9bkmfg.easypanel.host/emails/codigo-acesso.html
-   GOTRUE_MAILER_SUBJECTS_MAGIC_LINK=Seu código de acesso ao painel EPF
-   GOTRUE_MAILER_OTP_LENGTH=6
-   ```
+   Confira no console do `auth`: `printenv GOTRUE_MAILER_TEMPLATES_MAGIC_LINK` deve imprimir a URL. Se o e-mail chegar em inglês, ela não está no contêiner.
    O modelo é `public/emails/codigo-acesso.html`, publicado pelo próprio frontend. O remetente precisa ser de um domínio verificado no Resend.
 5. **Frontend (Easypanel):** serviço *App* apontando para este repositório, build por **Dockerfile** (nginx com fallback de SPA, porta 80). Em *Environment*, defina `VITE_SUPABASE_URL` e a `VITE_SUPABASE_ANON_KEY` **nova** — viram build args e são embutidas no build; sem elas o build falha de propósito.
 6. **Primeiro admin:** convide pelo Studio e rode
