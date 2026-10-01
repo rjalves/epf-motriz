@@ -8,7 +8,7 @@ const SERVICE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 const SITE = Deno.env.get('SITE_URL') ?? 'http://localhost:5173'
 const RESEND_URL = Deno.env.get('RESEND_API_URL') ?? 'https://api.resend.com/emails'
 const RESEND_KEY = Deno.env.get('RESEND_API_KEY')
-const REMETENTE = Deno.env.get('EMAIL_REMETENTE') ?? 'EPF <nao-responda@motriz.org>'
+const REMETENTE = Deno.env.get('EMAIL_REMETENTE') ?? 'EPF <nao-responda@epf.motriz.org>'
 const ROTULO: Record<string, string> = { admin: 'Admin Motriz', gestor_rede: 'Gestor da rede', regional: 'Regional', escola: 'Ponto focal da escola', pesquisador: 'Pesquisador' }
 const esc = (t: string) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!)
 const cors = { 'Access-Control-Allow-Origin': SITE, 'Access-Control-Allow-Headers': 'authorization, content-type, apikey, x-client-info' }
