@@ -66,7 +66,7 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    ```
 3. **Edge Function:** copie `supabase/functions/convidar-usuario/` para `volumes/functions/` do docker-compose do Supabase e defina `SITE_URL=https://<domínio da plataforma>` no serviço `functions`.
 4. **Auth:** `SITE_URL=https://<domínio>`, `ADDITIONAL_REDIRECT_URLS=https://<domínio>/painel`, `DISABLE_SIGNUP=true` e SMTP real.
-5. **Frontend:** `npm run build` com `VITE_SUPABASE_URL` e a `VITE_SUPABASE_ANON_KEY` **nova**; publique `dist/` com fallback de SPA (todas as rotas `/responder/*` e `/painel/*` servem `index.html`).
+5. **Frontend (Easypanel):** serviço *App* apontando para este repositório, build por **Dockerfile** (nginx com fallback de SPA, porta 80). Em *Environment*, defina `VITE_SUPABASE_URL` e a `VITE_SUPABASE_ANON_KEY` **nova** — viram build args e são embutidas no build; sem elas o build falha de propósito.
 6. **Primeiro admin:** convide pelo Studio e rode
    ```sql
    insert into public.perfil (user_id, papel, nome) select id, 'admin', 'Motriz' from auth.users where email = '<e-mail>';

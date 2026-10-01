@@ -1,0 +1,8 @@
+node_modules
+dist
+e2e
+supabase
+.env
+.env.*
+.git
+.superpowers
