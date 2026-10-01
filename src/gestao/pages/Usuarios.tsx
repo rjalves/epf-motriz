@@ -20,7 +20,7 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
   const [escolas, setEscolas] = useState<{ co_inep: number; nome: string; rede_id: string }[]>([])
   const papeis = papeisConvidaveis(perfil.papel)
   const [novo, setNovo] = useState({ email: '', nome: '', papel: papeis[papeis.length - 1], rede_id: perfil.rede_id ?? '', regional_id: '', co_inep: '' })
-  const [aviso, setAviso] = useState<{ tipo: 'sucesso' | 'erro'; texto: string; desfazer?: () => void } | null>(null)
+  const [aviso, setAviso] = useState<{ tipo: 'sucesso' | 'erro' | 'atencao'; texto: string; desfazer?: () => void } | null>(null)
   const [enviando, setEnviando] = useState(false)
 
   const carregar = () => sb.from('perfil').select('user_id,nome,papel,rede_id,regional_id,co_inep,ativo').order('papel').then(({ data }) => setLinhas(data ?? []))
@@ -35,7 +35,7 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
     e.preventDefault()
     setEnviando(true)
     const precisaRede = !['admin', 'pesquisador'].includes(novo.papel)
-    const { error } = await sb.functions.invoke('convidar-usuario', { body: {
+    const { data, error } = await sb.functions.invoke('convidar-usuario', { body: {
       email: novo.email, nome: novo.nome, papel: novo.papel,
       rede_id: precisaRede ? novo.rede_id : null,
       regional_id: novo.papel === 'regional' ? novo.regional_id : null,
@@ -50,7 +50,9 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
       }
       return setAviso({ tipo: 'erro', texto: `Não foi possível convidar: ${(motivo && TEXTO[motivo]) ?? motivo ?? error.message}.` })
     }
-    setAviso({ tipo: 'sucesso', texto: `Convite enviado para ${novo.email}.` })
+    setAviso(data?.email_enviado
+      ? { tipo: 'sucesso', texto: `Convite enviado para ${novo.email}.` }
+      : { tipo: 'atencao', texto: `Acesso criado para ${novo.email}, mas o e-mail de convite não saiu. Avise a pessoa para entrar em ${location.origin}/painel com este e-mail.` })
     setNovo({ ...novo, email: '', nome: '' }); carregar()
   }
 
@@ -118,7 +120,7 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
             <label className="epf-campo">Escola<select className="epf-select epf-select--p" required value={novo.co_inep} onChange={(e) => setNovo({ ...novo, co_inep: e.target.value })}>
               <option value="">Escolha</option>{escolas.filter((x) => x.rede_id === novo.rede_id).map((x) => <option key={x.co_inep} value={x.co_inep}>{x.nome}</option>)}</select></label>)}
           <button className="epf-btn epf-btn--primario" disabled={enviando} aria-busy={enviando}>{enviando ? 'Enviando…' : 'Enviar convite por e-mail'}</button>
-          <p className="epf-legenda" style={{ margin: 0 }}>A pessoa recebe um link de acesso. Convites e desativações ficam registrados na auditoria.</p>
+          <p className="epf-legenda" style={{ margin: 0 }}>A pessoa recebe um e-mail com o endereço do painel e entra com um código enviado na hora. Convites e desativações ficam registrados na auditoria.</p>
         </form>
       </div>
     </div>

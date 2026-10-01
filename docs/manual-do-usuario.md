@@ -45,19 +45,23 @@ O perfil aparece no canto superior direito do painel, ao lado do seu e-mail.
 
 ## 2. Entrar no painel (todos os perfis)
 
-O painel não usa senha. Você recebe um link de acesso por e-mail a cada entrada.
+O painel não usa senha. A cada entrada, você recebe por e-mail um código de 6 dígitos.
 
 1. Abra o endereço do painel: `https://<endereço da plataforma>/painel`.
 2. Digite o seu **e-mail institucional**, o mesmo em que você recebeu o convite.
-3. Clique em **Receber link de acesso**.
-4. Abra o e-mail que chegou e clique no link. O painel abre com você conectado.
-5. Para sair, clique em **Sair** no canto superior direito.
+3. Clique em **Receber código**.
+4. Abra o e-mail "Seu código de acesso ao painel EPF" e copie o código de 6 dígitos.
+5. Digite o código em **Código de acesso** e clique em **Entrar**.
+   - O código vale por 1 hora. Se pedir outro, use sempre o mais recente.
+   - **Reenviar código** manda um código novo (aguarde um minuto entre os pedidos).
+   - **Trocar e-mail** volta para o campo de e-mail.
+6. Para sair, clique em **Sair** no canto superior direito.
 
 **Só entra quem foi convidado.** Se aparecer "Não encontramos um acesso para este e-mail", peça o convite:
 - ao gestor da sua rede, se você é de uma regional ou de uma escola;
 - à Motriz, nos demais casos.
 
-**Primeiro acesso:** o convite chega por e-mail com um link. Clique nele para entrar pela primeira vez. Depois disso, entre sempre pelos passos acima.
+**Primeiro acesso:** o convite chega por e-mail ("Seu acesso ao painel EPF") com o endereço do painel. Entre pelos passos acima, com o e-mail em que recebeu o convite.
 
 ---
 
@@ -122,9 +126,9 @@ Depois do último dia da janela, a pesquisa fica encerrada para os estudantes me
    - **Regional**: a rede e a regional.
    - **Ponto focal da escola**: a rede e a escola.
    - **Admin Motriz** e **Pesquisador**: não têm rede, porque veem todas.
-4. Clique em **Enviar convite por e-mail**.
+4. Clique em **Enviar convite por e-mail**. A pessoa recebe um e-mail com o endereço do painel e entra com o código de 6 dígitos.
 
-Se o e-mail já tiver acesso ou um convite pendente, a plataforma avisa e não envia outro.
+Se aparecer "o e-mail de convite não saiu", o acesso foi criado mesmo assim: avise a pessoa para entrar no painel com aquele e-mail. Se o e-mail já tiver acesso ou um convite pendente, a plataforma avisa e não envia outro.
 
 **Sequência recomendada por campanha:** o admin convida o gestor da rede, e o gestor convida as regionais e os pontos focais das escolas.
 
@@ -346,7 +350,9 @@ O estudante não precisa de login, só do link ou do QR code que a escola divulg
 
 | Situação | O que fazer |
 |---|---|
-| O link de acesso não chegou | Confira a caixa de spam. Peça um novo link. O link de acesso vale por pouco tempo, use o mais recente. |
+| O código não chegou | Confira a caixa de spam e clique em **Reenviar código**. Use sempre o código mais recente. |
+| "Código incorreto ou vencido" | Confira os 6 dígitos ou peça um novo código. O código vale por 1 hora. |
+| "Aguarde um minuto antes de pedir outro código" | Por segurança, há um intervalo entre os pedidos. Espere e tente de novo. |
 | "Não encontramos um acesso para este e-mail" | Você não foi convidado com esse e-mail. Peça o convite ao gestor da rede ou à Motriz. |
 | "Seu acesso ainda não foi liberado ou foi desativado" | Fale com o ponto focal da sua rede ou com a Motriz. |
 | Não vejo a campanha da minha rede | A campanha ainda não foi criada, ou o seu perfil é de outra rede. Fale com a Motriz. |

@@ -36,16 +36,24 @@ cp .env.example .env   # preencha com a API URL e a anon key que o comando acima
 npm run dev            # http://localhost:5173/responder/teste-norte  e  http://localhost:5173/painel
 ```
 
-As portas locais do Supabase estão em 564xx (`supabase/config.toml`), porque 543xx e 553xx já eram usadas por outros projetos nesta máquina. E-mails locais (links de acesso e convites) chegam no Mailpit: http://127.0.0.1:56424.
+As portas locais do Supabase estão em 564xx (`supabase/config.toml`), porque 543xx e 553xx já eram usadas por outros projetos nesta máquina. Os códigos de acesso locais chegam no Mailpit: http://127.0.0.1:56424. Os convites saem pela API do Resend; localmente, `supabase/functions/.env` (git-ignorado, crie antes do `supabase start`) aponta para o Resend falso do e2e:
 
-Usuários de teste (entre pelo link que chega no Mailpit): `admin@`, `pesquisa@`, `gestor.norte@`, `regional.n1@`, `escola.alfa@`, `gestor.sul@` + `teste.org`.
+```
+RESEND_API_URL=http://host.docker.internal:58025/emails
+RESEND_API_KEY=re_teste
+EMAIL_REMETENTE=EPF <nao-responda@teste.org>
+```
+
+Sem esse arquivo, o convite cria o acesso e a tela avisa que o e-mail não saiu.
+
+Usuários de teste (entre com o código de 6 dígitos que chega no Mailpit): `admin@`, `pesquisa@`, `gestor.norte@`, `regional.n1@`, `escola.alfa@`, `gestor.sul@` + `teste.org`.
 
 ## Testes
 
 ```bash
 npm test                   # unitários (Vitest): regras de cadastro, ramificação, capacidades, relatório, plano amostral, gerador
 scripts/testar-banco.sh    # banco (pgTAP) num Postgres descartável: 92 verificações
-e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 17 + 15 + 16 verificações
+e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 17 + 17 + 17 verificações
 npm run build
 ```
 
@@ -64,8 +72,31 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    ```bash
    npx supabase migration repair --db-url "$DATABASE_URL" --status applied 20260929000001 20260929000002 20260929000003 20260929000004 20260929000005 20260929000006 20260929000007 20260929000008 20260929000009 20260930000010
    ```
-3. **Edge Function:** copie `supabase/functions/convidar-usuario/` para `volumes/functions/` do docker-compose do Supabase e defina `SITE_URL=https://<domínio da plataforma>` no serviço `functions`.
-4. **Auth:** `SITE_URL=https://<domínio>`, `ADDITIONAL_REDIRECT_URLS=https://<domínio>/painel`, `DISABLE_SIGNUP=true` e SMTP real.
+3. **Edge Function:** copie `supabase/functions/convidar-usuario/` para `volumes/functions/` do docker-compose do Supabase. No serviço `functions`, defina:
+   ```
+   SITE_URL=https://<domínio da plataforma>
+   RESEND_API_KEY=<chave do Resend>
+   EMAIL_REMETENTE=EPF <nao-responda@<domínio verificado no Resend>>
+   ```
+4. **Auth (login por código de 6 dígitos, e-mails pelo Resend):** no `.env` do Supabase:
+   ```
+   SITE_URL=https://<domínio>
+   ADDITIONAL_REDIRECT_URLS=https://<domínio>/painel
+   DISABLE_SIGNUP=true
+   SMTP_HOST=smtp.resend.com
+   SMTP_PORT=465
+   SMTP_USER=resend
+   SMTP_PASS=<chave do Resend>
+   SMTP_ADMIN_EMAIL=nao-responda@<domínio verificado no Resend>
+   SMTP_SENDER_NAME=EPF
+   ```
+   E no serviço `auth` do docker-compose, para o e-mail trazer o código em vez de um link:
+   ```
+   GOTRUE_MAILER_TEMPLATES_MAGIC_LINK=https://<domínio da plataforma>/emails/codigo-acesso.html
+   GOTRUE_MAILER_SUBJECTS_MAGIC_LINK=Seu código de acesso ao painel EPF
+   GOTRUE_MAILER_OTP_LENGTH=6
+   ```
+   O modelo é `public/emails/codigo-acesso.html`, publicado pelo próprio frontend. O remetente precisa ser de um domínio verificado no Resend.
 5. **Frontend (Easypanel):** serviço *App* apontando para este repositório, build por **Dockerfile** (nginx com fallback de SPA, porta 80). Em *Environment*, defina `VITE_SUPABASE_URL` e a `VITE_SUPABASE_ANON_KEY` **nova** — viram build args e são embutidas no build; sem elas o build falha de propósito.
 6. **Primeiro admin:** convide pelo Studio e rode
    ```sql

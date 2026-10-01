@@ -1,8 +1,8 @@
 # Teste de ponta a ponta da área de gestão por perfil (Playwright + Mailpit local).
 # Requer: supabase start (portas 564xx) + npm run dev (porta 5173). Uso: python3 e2e/gestao.py /tmp
-import re, sys
+import re, sys, time
 from playwright.sync_api import sync_playwright
-from util import check, entrar, resumo, sql
+from util import BASE, check, entrar, resumo, sql
 
 OUT = sys.argv[1]
 
@@ -16,6 +16,16 @@ select '30000000-0000-0000-0000-000000000001', e, s, 12, '\\x00', st from (
 
 with sync_playwright() as p:
     b = p.chromium.launch()
+
+    pg = b.new_page(); pg.goto(f'{BASE}/painel'); pg.get_by_label('E-mail institucional').fill('ninguem@teste.org')
+    pg.get_by_role('button', name='Receber código').click()
+    check('e-mail sem convite não recebe código', pg.get_by_text('Não encontramos um acesso para este e-mail').is_visible() or
+          pg.get_by_text('Não encontramos um acesso para este e-mail').wait_for() is None)
+    pg.get_by_label('E-mail institucional').fill('escola.alfa@teste.org'); pg.get_by_role('button', name='Receber código').click()
+    pg.get_by_label('Código de acesso').fill('000000'); pg.get_by_role('button', name='Entrar').click()
+    pg.get_by_text('Código incorreto ou vencido').wait_for()
+    check('código errado é recusado e não entra', pg.locator('.epf-topo').count() == 0)
+    pg.close(); time.sleep(1.5)  # intervalo mínimo entre códigos (max_frequency local = 1s)
 
     pg = entrar(b, 'escola.alfa@teste.org')
     pg.get_by_role('heading', name='EM ALFA').wait_for()

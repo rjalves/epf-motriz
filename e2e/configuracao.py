@@ -1,8 +1,21 @@
 # Teste de ponta a ponta: configuração de campanha (admin) e gestão de usuários (gestor), incluindo a Edge Function de convite.
-# Requer: supabase start com edge-runtime + npm run dev. Uso: python3 e2e/configuracao.py /tmp
-import os, re, sys
+# Requer: supabase start com edge-runtime + npm run dev, e supabase/functions/.env apontando o Resend
+# para o falso deste teste (ver README). Uso: python3 e2e/configuracao.py /tmp
+import json, os, re, sys, threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from playwright.sync_api import sync_playwright
-from util import BASE, agora, check, email_recebido, entrar, resumo, sql
+from util import BASE, check, entrar, resumo, sql
+
+# Resend falso: registra o que a Edge Function enviaria pela API.
+enviados = []
+class ResendFalso(BaseHTTPRequestHandler):
+    def do_POST(self):
+        corpo = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+        enviados.append({'caminho': self.path, 'auth': self.headers.get('Authorization'), **corpo})
+        self.send_response(200); self.send_header('Content-Type', 'application/json'); self.end_headers()
+        self.wfile.write(b'{"id":"falso"}')
+    def log_message(self, *a): pass
+threading.Thread(target=HTTPServer(('0.0.0.0', 58025), ResendFalso).serve_forever, daemon=True).start()
 
 OUT = sys.argv[1]
 PLANO = os.path.join(os.path.dirname(__file__), '..', 'src', 'gestao', '__fixtures__', 'plano-natal.xlsx')
@@ -47,12 +60,16 @@ with sync_playwright() as p:
     check('gestor não tem botão para o próprio perfil', 'Gestor Norte' in pg.locator('table').inner_text() and pg.locator('tr', has_text='Gestor Norte').get_by_role('button').count() == 0)
     pg.get_by_label('E-mail institucional').fill('nova.escola@teste.org'); pg.get_by_label('Nome', exact=True).fill('Escola Beta')
     pg.get_by_label('Ponto focal da escola').check(); pg.locator('form select').last.select_option(label='EM BETA')
-    desde = agora()
     pg.get_by_role('button', name='Enviar convite por e-mail').click()
     pg.get_by_text(re.compile('Convite enviado|Não foi possível convidar')).wait_for()
     check('convite enviado pela Edge Function', pg.get_by_text('Convite enviado para nova.escola@teste.org.').is_visible())
     check('perfil criado com o escopo certo', sql("select papel || ':' || co_inep from perfil p join auth.users u on u.id = p.user_id where u.email = 'nova.escola@teste.org'") == 'escola:91000002')
-    check('e-mail de convite chegou', email_recebido('nova.escola@teste.org', desde) is not None)
+    convite = next((e for e in enviados if e.get('to') == ['nova.escola@teste.org']), None)
+    check('convite enviado pela API do Resend', convite is not None and convite['caminho'] == '/emails' and convite['auth'] == 'Bearer re_teste'
+          and 'http://localhost:5173/painel' in convite['html'] and 'Escola Beta' in convite['html'])
+    convidado = entrar(b, 'nova.escola@teste.org')
+    check('convidado entra com o código como ponto focal', 'ponto focal da escola' in convidado.locator('.epf-topo').inner_text().lower())
+    convidado.context.close()
     check('convite registrado na auditoria', sql("select count(*) from auditoria where acao = 'convidar_usuario' and alvo like 'nova.escola%'") == '1')
 
     chamar = """async (corpo) => {
