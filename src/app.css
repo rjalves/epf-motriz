@@ -1,0 +1,48 @@
+/* Ajustes de página da aplicação. Componentes e tokens vêm do design system (src/design-system). */
+.estudante { min-height: 100dvh; display: flex; flex-direction: column; background: var(--epf-marfim); }
+.estudante__topo { display: flex; flex-direction: column; gap: 10px; padding: 14px var(--epf-margem-mobile) 16px; background: var(--epf-papel); border-bottom: 1px solid var(--epf-linha); }
+.estudante__topo > div { max-width: var(--epf-largura-estudante); width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.estudante__acoes { display: flex; flex-direction: column; gap: 10px; }
+.estudante__rodape { margin-top: auto; }
+.estudante__rodape > div { max-width: var(--epf-largura-estudante); margin: 0 auto; width: 100%; display: flex; gap: 10px; }
+.boas-vindas { min-height: 100dvh; display: flex; flex-direction: column; }
+.boas-vindas main { flex: 1; max-width: var(--epf-largura-estudante); width: 100%; margin: 0 auto; padding: 28px 24px; display: flex; flex-direction: column; gap: 22px; position: relative; }
+.boas-vindas h1 { margin: 0; font-size: 40px; line-height: 1.08; font-weight: 800; letter-spacing: -0.02em; }
+.boas-vindas p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--epf-texto-inv-2); }
+.boas-vindas footer { max-width: var(--epf-largura-estudante); width: 100%; margin: 0 auto; padding: 20px 24px 28px; display: flex; flex-direction: column; gap: 12px; position: relative; }
+.boas-vindas .simbolo { width: 200px; height: 120px; color: #fff; }
+.garantias { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.garantias li { display: flex; gap: 14px; align-items: flex-start; background: var(--epf-papel); border: 1px solid var(--epf-linha); border-radius: 16px; padding: 16px; font-size: 16px; line-height: 1.5; }
+.garantias svg { flex-shrink: 0; width: 22px; height: 22px; margin-top: 2px; }
+.conclusao { text-align: center; align-items: center; padding-top: 64px; }
+.conclusao__check { width: 96px; height: 96px; border-radius: 50%; background: var(--epf-teal-escuro); color: #fff; display: flex; align-items: center; justify-content: center; }
+.conclusao__check svg { width: 48px; height: 48px; }
+
+/* Gestão */
+.conteudo-painel { padding-top: 36px; padding-bottom: 64px; }
+.pagina-titulo { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px; }
+.grade-kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.faixa-numeros { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); background: var(--epf-papel); border: 1px solid var(--epf-linha); border-radius: var(--epf-r-cartao); }
+.faixa-numeros > div { display: flex; flex-direction: column; gap: 6px; padding: 22px 26px; }
+.faixa-numeros > div + div { border-left: 1px solid var(--epf-linha); }
+.faixa-numeros .epf-dado { font-size: 32px; }
+.relatorio { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 28px; border-color: var(--epf-noite); }
+.relatorio pre { margin: 0; font: 13px/1.6 var(--epf-fonte-mono); white-space: pre-wrap; }
+.visualmente-oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.login { min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+.login__marca { display: flex; flex-direction: column; }
+.login__marca-conteudo { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 40px; padding: 56px 64px; position: relative; z-index: 1; }
+.login__form { display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+@media (max-width: 900px) {
+  .login { grid-template-columns: 1fr; }
+  .login__marca-conteudo { padding: 32px 20px; }
+  .relatorio { grid-template-columns: 1fr; }
+  .faixa-numeros > div + div { border-left: 0; border-top: 1px solid var(--epf-linha); }
+  .topo-email { display: none; }
+}
+.grade-config { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.grade-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.grade-usuarios { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 24px; align-items: start; }
+@media (max-width: 1024px) { .grade-config, .grade-usuarios { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .grade-campos { grid-template-columns: 1fr; } }
+.rodape-painel { padding-top: 20px; padding-bottom: 28px; border-top: 1px solid var(--epf-linha); color: var(--epf-texto-2); }

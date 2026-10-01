@@ -1,0 +1,1202 @@
+select public._importar_instrumento('EPF 2026 v1', $j${
+  "blocos": [
+    {
+      "codigo": "A",
+      "titulo": "Perfil e contexto",
+      "introducao": null,
+      "series": null,
+      "itens": [
+        {
+          "codigo": "A2",
+          "enunciado": "Qual é sua cor ou raça?",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Branca",
+            "Preta",
+            "Amarela",
+            "Parda",
+            "Indígena",
+            "Prefiro não responder",
+            "Não sei"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Perfil",
+          "depende_de": null
+        },
+        {
+          "codigo": "A3",
+          "enunciado": "Qual é o seu gênero?",
+          "orientacao": "Responda como se sente em relação a sua identidade como pessoa.",
+          "tipo": "unica",
+          "opcoes": [
+            "Menina",
+            "Menino",
+            "Não binária",
+            "Outro",
+            "Prefiro não responder"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Perfil",
+          "depende_de": null
+        },
+        {
+          "codigo": "A4",
+          "enunciado": "Você possui alguma deficiência?",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Não possuo deficiência e não preciso de apoios específicos.",
+            "Deficiência Física (ex: dificuldade de locomoção, uso de cadeira de rodas).",
+            "Deficiência Visual (cegueira ou baixa visão).",
+            "Deficiência Auditiva ou Surdez.",
+            "Deficiência Intelectual.",
+            "Transtorno do Espectro Autista (TEA).",
+            "Deficiência Múltipla (mais de uma deficiência associada).",
+            "Surdocegueira.",
+            "Outra condição que exige apoio (ex: Altas Habilidades/Superdotação).",
+            "Prefiro não responder."
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Perfil",
+          "depende_de": null
+        },
+        {
+          "codigo": "A7",
+          "enunciado": "Sobre o tempo que passo na escola, eu estudo em:",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Tempo parcial (fico em apenas um período na escola)",
+            "Tempo integral (fico em mais de um período na escola)"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Contexto",
+          "depende_de": null
+        },
+        {
+          "codigo": "A9",
+          "enunciado": "Você participa de atividades artísticas ou culturais?",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Não",
+            "Sim"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Perfil",
+          "depende_de": null
+        },
+        {
+          "codigo": "A9_1",
+          "enunciado": "De quais atividades artísticas ou culturais você participa?",
+          "orientacao": "Nessa pergunta, você pode escolher até 3 alternativas de resposta. Escolha as que mais tem a ver com você.",
+          "tipo": "multipla",
+          "opcoes": [
+            "Música",
+            "Dança",
+            "Teatro",
+            "Desenho/pintura",
+            "Cultura digital (vídeos, edição, etc.)",
+            "Outra"
+          ],
+          "max_escolhas": 3,
+          "obrigatorio": false,
+          "reverso": false,
+          "construto": "Perfil",
+          "depende_de": {
+            "item": "A9",
+            "valor": "Sim"
+          }
+        },
+        {
+          "codigo": "A9_2",
+          "enunciado": "Essas atividades acontecem:",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Fora da escola",
+            "Na escola",
+            "Nos dois"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": false,
+          "reverso": false,
+          "construto": "Contexto",
+          "depende_de": {
+            "item": "A9",
+            "valor": "Sim"
+          }
+        },
+        {
+          "codigo": "A10",
+          "enunciado": "Você participa de algum grupo ou clube de atividades na escola? (Exemplo: Jornal/Podcast da escola, Clube de Xadres, Grupos de Games, Grupos de Programação, Clubes de Escoteiros)",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Não",
+            "Sim"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Perfil",
+          "depende_de": null
+        },
+        {
+          "codigo": "A10_1",
+          "enunciado": "De quais grupos ou clubes de atividades você participa na escola?",
+          "orientacao": "Nessa pergunta, você pode escolher até 3 alternativas de resposta. Escolha as que mais tem a ver com você.",
+          "tipo": "multipla",
+          "opcoes": [
+            "Grêmio estudantil",
+            "Clube/Projeto escolar",
+            "Esporte",
+            "Atividades culturais/artísticas",
+            "Outro"
+          ],
+          "max_escolhas": 3,
+          "obrigatorio": false,
+          "reverso": false,
+          "construto": "Perfil",
+          "depende_de": {
+            "item": "A10",
+            "valor": "Sim"
+          }
+        }
+      ]
+    },
+    {
+      "codigo": "B",
+      "titulo": "Vínculo e acolhimento",
+      "introducao": null,
+      "series": null,
+      "itens": [
+        {
+          "codigo": "B1",
+          "enunciado": "Eu gosto de ir para a escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B2",
+          "enunciado": "Na minha escola, me sinto bem.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B3",
+          "enunciado": "Na minha escola, sinto que os adultos me acolhem.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B4",
+          "enunciado": "Na minha escola tenho amigos ou amigas com quem gosto de estar.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B5",
+          "enunciado": "Sinto que sou valorizado(a) pelas pessoas da minha escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B6",
+          "enunciado": "O que mais faz você se sentir valorizado na escola?",
+          "orientacao": "Nessa pergunta, você pode escolher até 3 alternativas de resposta. Escolha as que mais tem a ver com você.",
+          "tipo": "multipla",
+          "opcoes": [
+            "Relação com os amigos",
+            "Relação com professores",
+            "Poder ser quem eu sou",
+            "Participação da minha família",
+            "Participar de atividades culturais/artísticas",
+            "Praticar esportes",
+            "Ser reconhecido pelos meus conhecimentos e aprendizados",
+            "Ser reconhecido pelos meus talentos e habilidades",
+            "Outro"
+          ],
+          "max_escolhas": 3,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B7",
+          "enunciado": "Na minha escola, posso me expressar com liberdade.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B8",
+          "enunciado": "Os adultos que trabalham na minha escola (professores, coordenadores, diretores, secretários, e outros profissionais) se importam se eu falto nas aulas.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B9",
+          "enunciado": "Todos podem participar das decisões do dia a dia da escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B10",
+          "enunciado": "Na minha escola, as famílias participam e acompanham atividades escolares.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B11",
+          "enunciado": "Muitas vezes me sinto invisível na minha escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": true,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        },
+        {
+          "codigo": "B12",
+          "enunciado": "Sinto que a escola valoriza a cultura e os espaços do bairro onde está localizada.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Vínculo e acolhimento",
+          "depende_de": null
+        }
+      ]
+    },
+    {
+      "codigo": "C",
+      "titulo": "Segurança e respeito",
+      "introducao": null,
+      "series": null,
+      "itens": [
+        {
+          "codigo": "C1",
+          "enunciado": "Na minha escola existe um ambiente seguro.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C2",
+          "enunciado": "Na minha escola tem pelo menos um adulto em quem confio.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C3",
+          "enunciado": "Na minha escola, profissionais respeitam e valorizam estudantes.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C4",
+          "enunciado": "Meus professores acreditam que eu sou capaz de aprender.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C5",
+          "enunciado": "Na escola, posso ser eu mesmo(a) sem medo de sofrer preconceito.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C6",
+          "enunciado": "Me sinto respeitado(a) na escola pela minha cor ou raça.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C7",
+          "enunciado": "Me sinto seguro(a) para falar como me identifico (menina, menino ou de outro jeito) e sobre quem eu gosto.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C8",
+          "enunciado": "Nunca presenciei, nesta escola, situações de discriminação por causa da cor/raça, gênero, orientação sexual, lugar de origem ou religião.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C9",
+          "enunciado": "Na minha escola, sou tratado(a) com respeito e consideração pelos meus colegas (amigos e outros estudantes).",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        },
+        {
+          "codigo": "C10",
+          "enunciado": "Os adultos que trabalham na minha escola(professores, coordenadores, diretores, secretários, e outros profissionais) me tratam com respeito e consideração.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Segurança e Respeito",
+          "depende_de": null
+        }
+      ]
+    },
+    {
+      "codigo": "D",
+      "titulo": "Aprendizagem e engajamento",
+      "introducao": null,
+      "series": null,
+      "itens": [
+        {
+          "codigo": "D1",
+          "enunciado": "Sinto que aprendo coisas novas na maioria das aulas.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D2",
+          "enunciado": "A escola me desafia a pensar e resolver problemas.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D3",
+          "enunciado": "Em comparação com o início do ano, sinto que aprendi bastante.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D4",
+          "enunciado": "Estou satisfeito(a) com o quanto tenho aprendido na escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D5",
+          "enunciado": "O que aprendo na escola me ajuda a compreender melhor o mundo ao meu redor.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D6",
+          "enunciado": "Na minha escola, o ambiente é bom para todo mundo aprender.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D7",
+          "enunciado": "Eu me sinto motivado a participar das atividades da escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D8",
+          "enunciado": "Tenho interesse na maioria das aulas na escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D9",
+          "enunciado": "Meus (minhas) professores (as) incentivam a minha participação nas aulas.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D10",
+          "enunciado": "O que mais contribui para você se envolver nas aulas?",
+          "orientacao": "Nessa pergunta, você pode escolher até 3 alternativas de resposta. Escolha as que mais tem a ver com você.",
+          "tipo": "multipla",
+          "opcoes": [
+            "Atividades práticas, desafios ou resolução de problemas",
+            "Uso de tecnologia",
+            "Atividades em grupo",
+            "Quando consigo entender a explicação do professor",
+            "Conteúdo tem a ver com a vida real",
+            "Fazendo visitas, passeios e trabalhos fora da escola",
+            "Liberdade para opinar",
+            "Outro"
+          ],
+          "max_escolhas": 3,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D11",
+          "enunciado": "Costumo realizar as atividades que os(as) professores(as) propõem.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D12",
+          "enunciado": "Meus(minhas) professores(as) usam materiais que deixam as aulas mais interessantes.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D13",
+          "enunciado": "Tenho espaço para fazer perguntas para o (a) professor (a) quando tenho alguma dúvida.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D14",
+          "enunciado": "Consigo explicar meu ponto de vista mesmo sobre conteúdos difíceis.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D15",
+          "enunciado": "Eu me sinto à vontade para discordar dos(as) meus(minhas) professores(as).",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D16",
+          "enunciado": "Recebo apoio na escola quando tenho dificuldade para aprender algo.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D17",
+          "enunciado": "Ajudo meus colegas de turma quando percebo que eles têm dúvidas.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D18",
+          "enunciado": "As atividades da escola me desafiam a pensar e a me esforçar mais.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        },
+        {
+          "codigo": "D19",
+          "enunciado": "Minha família me ajuda quando as matérias são difíceis.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Aprendizagem e Engajamento",
+          "depende_de": null
+        }
+      ]
+    },
+    {
+      "codigo": "E",
+      "titulo": "Autoconhecimento e confiança",
+      "introducao": null,
+      "series": null,
+      "itens": [
+        {
+          "codigo": "E1",
+          "enunciado": "Eu tenho facilidade para insistir nas minhas intenções e alcançar meus objetivos.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Autoconhecimento e confiança",
+          "depende_de": null
+        },
+        {
+          "codigo": "E2",
+          "enunciado": "Eu tenho confiança para me sair bem em situações inesperadas.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Autoconhecimento e confiança",
+          "depende_de": null
+        },
+        {
+          "codigo": "E3",
+          "enunciado": "Minha família reconhece meu esforço quando as matérias são difíceis.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Autoconhecimento e confiança",
+          "depende_de": null
+        },
+        {
+          "codigo": "E4",
+          "enunciado": "Meus professores reconhecem meu esforço quando as matérias são difíceis.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Autoconhecimento e confiança",
+          "depende_de": null
+        },
+        {
+          "codigo": "E5",
+          "enunciado": "Eu me mantenho calmo(a) mesmo enfrentando dificuldades porque eu confio na minha capacidade de resolver problemas.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": null,
+          "depende_de": null
+        },
+        {
+          "codigo": "E6",
+          "enunciado": "Consigo identificar quais qualidades minhas podem me ajudar no futuro.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Autoconhecimento e confiança",
+          "depende_de": null
+        },
+        {
+          "codigo": "E7",
+          "enunciado": "Quando eu me esforço bastante, sempre consigo resolver os problemas difíceis.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Autoconhecimento e confiança",
+          "depende_de": null
+        }
+      ]
+    },
+    {
+      "codigo": "F",
+      "titulo": "Sonhar a vida e realizar o futuro",
+      "introducao": null,
+      "series": null,
+      "itens": [
+        {
+          "codigo": "F1",
+          "enunciado": "Eu converso sobre os meus sonhos na escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Sonhar a Vida, realizar o Futuro",
+          "depende_de": null
+        },
+        {
+          "codigo": "F2",
+          "enunciado": "Na minha escola conheço mais sobre mim e as coisas que sei fazer.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Sonhar a Vida, realizar o Futuro",
+          "depende_de": null
+        },
+        {
+          "codigo": "F3",
+          "enunciado": "Na minha escola, sinto que estou me preparando para as escolhas do meu futuro (ensino médio, faculdade, carreira etc)",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Sonhar a Vida, realizar o Futuro",
+          "depende_de": null
+        },
+        {
+          "codigo": "F4",
+          "enunciado": "Minha família me apoia a planejar o que quero para o meu futuro.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Sonhar a Vida, realizar o Futuro",
+          "depende_de": null
+        },
+        {
+          "codigo": "F5",
+          "enunciado": "Acredito que o estudo pode melhorar minhas oportunidades na vida.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Sonhar a Vida, realizar o Futuro",
+          "depende_de": null
+        }
+      ]
+    },
+    {
+      "codigo": "G",
+      "titulo": "Transições (6º ano)",
+      "introducao": null,
+      "series": [
+        6
+      ],
+      "itens": [
+        {
+          "codigo": "G1",
+          "enunciado": "Precisei mudar de escola no 6º ano.",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Não",
+            "Sim"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 6º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "G2",
+          "enunciado": "Porque você foi para a sua escola atual?",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "A escola é de Tempo Integral",
+            "Decisão dos meus pais ou responsáveis",
+            "Ela é a mais perto da nossa casa",
+            "Esta escola foi considerada melhor do que outras opções de escola",
+            "Indicação de professor(a) ou Diretor(a) da minha escola anterior",
+            "Meus amigos da escola antiga vinham para cá",
+            "Meus irmãos, primos ou pais já estudaram nesta escola antes",
+            "Não sei"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 6º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "G3",
+          "enunciado": "Minha família conversou comigo sobre os motivos de me matricular nesta escola.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 6º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "G4",
+          "enunciado": "Foi fácil me adaptar ao 6º ano.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": null,
+          "depende_de": null
+        },
+        {
+          "codigo": "G5",
+          "enunciado": "Tenho segurança de tudo o que eu aprendi até o quinto ano (5º ano).",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 6º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "G6",
+          "enunciado": "A escola me ajudou a entender como o sexto ano (6º ano) funciona.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 6º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "G7",
+          "enunciado": "Sinto dificuldade agora que tenho mais matérias e provas.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": true,
+          "construto": "Transições - 6º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "G8",
+          "enunciado": "Os professores entendem que eu ainda estou me acostumando com as mudanças do 6º ano.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 6º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "G9",
+          "enunciado": "A escola me incentiva a continuar meus estudos e a concluir o Ensino Fundamental.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 6º ano",
+          "depende_de": null
+        }
+      ]
+    },
+    {
+      "codigo": "H",
+      "titulo": "Transições (9º ano)",
+      "introducao": null,
+      "series": [
+        9
+      ],
+      "itens": [
+        {
+          "codigo": "H1",
+          "enunciado": "Estou conseguindo acompanhar as aulas e explicações deste ano.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 9º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "H2",
+          "enunciado": "A escola me incentiva a continuar meus estudos e a concluir o Ensino Fundamental.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": null,
+          "depende_de": null
+        },
+        {
+          "codigo": "H3",
+          "enunciado": "Quando terminar o Ensino Fundamental, você pretende:",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Ainda não sei",
+            "Continuar estudando e trabalhar",
+            "Somente continuar estudando",
+            "Somente trabalhar"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 9º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "H4",
+          "enunciado": "As atividades da escola me ajudaram a escolher onde vou estudar no ano que vem.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": null,
+          "depende_de": null
+        },
+        {
+          "codigo": "H5",
+          "enunciado": "Converso com a minha família sobre minhas escolhas para o ano que vem.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 9º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "H6",
+          "enunciado": "Estou animado(a) para começar o Ensino Médio no ano que vem.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 9º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "H7",
+          "enunciado": "Eu entendo o que vai mudar na minha rotina de estudos no Ensino Médio.",
+          "orientacao": null,
+          "tipo": "likert5",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": null,
+          "depende_de": null
+        },
+        {
+          "codigo": "H8",
+          "enunciado": "Tenho conhecimento sobre as áreas do conhecimento do Novo Ensino Médio (NEM)? (Ajustado para o formato do aluno)",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Não",
+            "Sim"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 9º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "H9",
+          "enunciado": "Para você, qual é o principal motivo para estudar a etapa do Ensino Médio?",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Dar continuidade aos meus estudos",
+            "Descobrir o que fazer futuramente",
+            "Desenvolver novas habilidades",
+            "Entrar na faculdade",
+            "Estudar um curso técnico",
+            "Nenhum, sou obrigado(a)",
+            "Ter um bom emprego futuramente"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 9º ano",
+          "depende_de": null
+        },
+        {
+          "codigo": "H10",
+          "enunciado": "Você gostaria estudar algum curso técnico ou o itinerário de formação técnica e profissional durante o Ensino Médio?",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Não",
+            "Sim",
+            "Talvez"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": null,
+          "depende_de": null
+        },
+        {
+          "codigo": "H13",
+          "enunciado": "Seus pais e/ou responsáveis incentivam para que você estude em um curso técnico ou o itinerário de formação técnica e profissional?",
+          "orientacao": null,
+          "tipo": "unica",
+          "opcoes": [
+            "Não",
+            "Sim"
+          ],
+          "max_escolhas": null,
+          "obrigatorio": true,
+          "reverso": false,
+          "construto": "Transições - 9º ano",
+          "depende_de": null
+        }
+      ]
+    },
+    {
+      "codigo": "I",
+      "titulo": "Perguntas abertas",
+      "introducao": null,
+      "series": null,
+      "itens": [
+        {
+          "codigo": "I1",
+          "enunciado": "O que mais faz você se sentir bem na escola?",
+          "orientacao": null,
+          "tipo": "texto",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": false,
+          "reverso": false,
+          "construto": null,
+          "depende_de": null
+        },
+        {
+          "codigo": "I2",
+          "enunciado": "Tem alguma coisa que você gostaria de falar que a gente não perguntou?",
+          "orientacao": null,
+          "tipo": "texto",
+          "opcoes": [],
+          "max_escolhas": null,
+          "obrigatorio": false,
+          "reverso": false,
+          "construto": null,
+          "depende_de": null
+        }
+      ]
+    }
+  ]
+}$j$::jsonb);
