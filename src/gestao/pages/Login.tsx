@@ -28,7 +28,10 @@ export default function Login() {
             <h1 className="epf-h1">Acompanhe a participação escola a escola.</h1>
             <p className="epf-lead">Metas, escolas que precisam de apoio e o relatório diário da rede, num só lugar.</p>
           </div>
-          <p className="epf-legenda" style={{ color: 'var(--epf-texto-inv-3)' }}>Realização Itaú Social · Articulação Motriz · Apoio técnico Germina</p>
+          <div className="epf-pilha" style={{ gap: 4, color: 'var(--epf-texto-inv-3)' }}>
+            <p className="epf-legenda" style={{ margin: 0, color: 'inherit' }}>Realização Itaú Social · Articulação Motriz · Apoio técnico Germina</p>
+            <p className="epf-legenda" style={{ margin: 0, color: 'inherit' }}>Desenvolvido com Tecnologia Motriz</p>
+          </div>
         </div>
       </aside>
       <main className="login__form">

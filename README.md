@@ -2,6 +2,7 @@
 
 Plataforma da pesquisa **EPF — Engajamento, Pertencimento e Futuros**: o estudante responde o questionário pelo link da campanha, e a Motriz, as secretarias, as regionais, as escolas e os pesquisadores acompanham a coleta em tempo real, cada um vendo só o que o seu perfil permite.
 
+- Manual do usuário, por perfil: `docs/manual-do-usuario.md`
 - Contexto do projeto: `../docs/conhecimento-epf.md`
 - Design (decisões, modelo, permissões): `../docs/superpowers/specs/2026-09-29-plataforma-epf-design.md`
 - Modelo de dados e implantação do banco: `../database/modelo-de-dados.md`

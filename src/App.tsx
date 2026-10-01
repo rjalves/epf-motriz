@@ -13,6 +13,8 @@ import PainelEscola from './gestao/pages/PainelEscola'
 import Configuracao from './gestao/pages/Configuracao'
 import Usuarios from './gestao/pages/Usuarios'
 
+const Rodape = () => <footer className="epf-pagina rodape-painel epf-legenda">Desenvolvido com Tecnologia Motriz</footer>
+
 const PAPEL_CLASSE = { admin: 'admin', gestor_rede: 'gestor', regional: 'regional', escola: 'escola', pesquisador: 'pesquisador' } as const
 
 function Gestao() {
@@ -29,7 +31,7 @@ function Gestao() {
   if (!sessao) return <Login />
   if (carregando) return <main className="epf-pagina" style={{ paddingTop: 40 }}><span className="epf-esqueleto" style={{ display: 'block', height: 120 }} /></main>
   if (!perfil) {
-    return (
+    return (<>
       <main className="epf-pagina" style={{ paddingTop: 64, maxWidth: 720 }}>
         <div className="epf-estado">
           <b>Seu acesso ainda não foi liberado ou foi desativado.</b>
@@ -37,7 +39,8 @@ function Gestao() {
           <button className="epf-btn epf-btn--secundario epf-btn--p" onClick={() => sb.auth.signOut()}>Sair</button>
         </div>
       </main>
-    )
+      <Rodape />
+    </>)
   }
   const p = perfil.papel
   return (
@@ -69,6 +72,7 @@ function Gestao() {
           <Route path="*" element={<Navigate to="/painel" />} />
         </Routes>
       </main>
+      <Rodape />
     </>
   )
 }
