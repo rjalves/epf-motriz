@@ -15,9 +15,12 @@ export default function Login() {
     // shouldCreateUser: false — só entra quem foi convidado. O e-mail traz o código ({{ .Token }}).
     const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false } })
     setEnviando(false)
+    // otp_disabled: o Auth não achou o e-mail (shouldCreateUser: false). Outros erros são falha de envio.
     if (error) return setEstado({ tipo: 'erro', texto: error.status === 429
       ? 'Aguarde um minuto antes de pedir outro código.'
-      : 'Não encontramos um acesso para este e-mail. Fale com o ponto focal da sua rede.' })
+      : error.code === 'otp_disabled'
+        ? 'Não encontramos um acesso para este e-mail. Fale com o ponto focal da sua rede.'
+        : `Não foi possível enviar o código agora. Tente de novo em instantes. (${error.message})` })
     setEtapa('codigo'); setCodigo('')
     setEstado({ tipo: 'sucesso', texto: `Enviamos um código de 6 dígitos para ${email}.` })
   }
