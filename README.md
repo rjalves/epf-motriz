@@ -74,14 +74,14 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    ```
 3. **Edge Function:** copie `supabase/functions/convidar-usuario/` para `volumes/functions/` do docker-compose do Supabase. No serviço `functions`, defina:
    ```
-   SITE_URL=https://epf.motriz.org
+   SITE_URL=https://deploy-epf.9bkmfg.easypanel.host
    RESEND_API_KEY=<chave do Resend>
    EMAIL_REMETENTE=EPF <nao-responda@epf.motriz.org>
    ```
 4. **Auth (login por código de 6 dígitos, e-mails pelo Resend):** no `.env` do Supabase:
    ```
-   SITE_URL=https://epf.motriz.org
-   ADDITIONAL_REDIRECT_URLS=https://epf.motriz.org/painel
+   SITE_URL=https://deploy-epf.9bkmfg.easypanel.host
+   ADDITIONAL_REDIRECT_URLS=https://deploy-epf.9bkmfg.easypanel.host/painel
    DISABLE_SIGNUP=true
    SMTP_HOST=smtp.resend.com
    SMTP_PORT=465
@@ -92,7 +92,7 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    ```
    E no serviço `auth` do docker-compose, para o e-mail trazer o código em vez de um link:
    ```
-   GOTRUE_MAILER_TEMPLATES_MAGIC_LINK=https://epf.motriz.org/emails/codigo-acesso.html
+   GOTRUE_MAILER_TEMPLATES_MAGIC_LINK=https://deploy-epf.9bkmfg.easypanel.host/emails/codigo-acesso.html
    GOTRUE_MAILER_SUBJECTS_MAGIC_LINK=Seu código de acesso ao painel EPF
    GOTRUE_MAILER_OTP_LENGTH=6
    ```
