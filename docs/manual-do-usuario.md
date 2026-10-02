@@ -100,13 +100,19 @@ A **meta** de cada escola é calculada automaticamente: 85% das matrículas do 6
 
 ### 3.3 Importar uma nova versão do questionário
 
-Faça isso só quando o questionário for revisado.
+Faça isso só quando o questionário for revisado. A importação aceita **Excel (.xlsx)** ou **JSON**.
 
-1. A equipe técnica gera o arquivo `.json` da nova versão a partir da planilha do questionário.
-2. Na configuração de qualquer campanha, no cartão **Questionário**, clique em **Importar nova versão (.json)**.
-3. Em **Versão do questionário**, selecione a nova versão e clique em **Salvar alterações**.
+1. Na configuração de qualquer campanha (ou em **Nova campanha**), no cartão **Questionário**, clique em **Baixar modelo Excel** (ou **Baixar modelo JSON**). O modelo já vem com o questionário EPF 2026 preenchido.
+2. No Excel, edite as abas **Blocos** e **Itens**. A aba **Instruções** explica cada coluna. Uma linha é uma pergunta, e as alternativas ficam na coluna `opcoes`, separadas por `|` (ex.: `Sim | Não`).
+3. Salve o arquivo com o nome da nova versão, por exemplo `EPF 2026 v2.xlsx`. O nome do arquivo vira o nome da versão.
+4. Clique em **Importar nova versão (Excel ou JSON)** e escolha o arquivo.
+   - Se algo estiver errado, a plataforma lista cada problema com a pergunta ou a linha da planilha (ex.: "Aba Itens, linha 12: o bloco "Z" não está na aba Blocos."). Corrija no arquivo e importe de novo.
+   - Se já existir uma versão com esse nome, renomeie o arquivo.
+5. Em **Versão do questionário**, selecione a nova versão e clique em **Salvar alterações**.
 
 Campanhas antigas continuam com a versão com que foram aplicadas. Não troque a versão de uma campanha que já recebeu respostas.
+
+O Excel em `/Instrumento` é o documento de autoria do questionário (texto livre, notas e alternativas numeradas numa célula só) e não é importado direto: passe o conteúdo para o modelo Excel.
 
 ### 3.4 Abrir e fechar a coleta
 

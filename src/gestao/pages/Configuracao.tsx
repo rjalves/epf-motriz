@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useState, type ChangeEvent, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { sb } from '../../lib/supabase'
+import * as XLSX from 'xlsx'
 import { lerPlanoAmostral } from '../amostra'
+import { lerQuestionarioXlsx, planilhaDoQuestionario, validarQuestionario, type Questionario } from '../questionario'
 import LinkPesquisa from './LinkPesquisa'
 
 type Campanha = { id?: string; rede_id: string; numero: number; slug: string; instrumento_versao_id: string
   janela_inicio: string; janela_fim: string; aberta: boolean; series: number[] }
-type Aviso = { tipo: 'sucesso' | 'erro' | 'atencao'; texto: string } | null
+type Aviso = { tipo: 'sucesso' | 'erro' | 'atencao'; texto: string; detalhes?: string[] } | null
+const MODELO_JSON = '/modelos/modelo-questionario-epf.json'
 
 export default function Configuracao() {
   const { id } = useParams()
@@ -65,12 +68,27 @@ export default function Configuracao() {
         const removidas = data.removidas ? ` ${data.removidas} escola(s) que não estão no arquivo saíram do plano.` : ''
         setAviso({ tipo: 'sucesso', texto: `${escolas.length} escolas importadas; ${escolas.filter((x) => x.in_amostra).length} na amostra.${removidas}` })
       } else {
-        const { error } = await sb.rpc('importar_instrumento', { p_nome: f.name.replace(/\.json$/, ''), p_def: JSON.parse(await f.text()) })
-        if (error) throw new Error(error.message)
+        const nome = f.name.replace(/\.(json|xlsx)$/i, '').trim()
+        let q: Questionario | undefined, erros: string[]
+        if (/\.xlsx$/i.test(f.name)) ({ questionario: q, erros } = lerQuestionarioXlsx(await f.arrayBuffer()))
+        else {
+          try { q = JSON.parse(await f.text()) } catch { throw new Error('o arquivo .json não está bem formado') }
+          erros = validarQuestionario(q)
+        }
+        if (erros.length) return setAviso({ tipo: 'erro', texto: `Não foi possível importar "${f.name}". Corrija no arquivo e importe de novo:`, detalhes: erros })
+        const { error } = await sb.rpc('importar_instrumento', { p_nome: nome, p_def: q })
+        if (error) throw new Error(error.message.includes('instrumento_versao_nome_key')
+          ? `já existe uma versão chamada "${nome}". Renomeie o arquivo e importe de novo` : error.message)
         await carregarVersoes()
-        setAviso({ tipo: 'sucesso', texto: 'Nova versão do questionário importada. Selecione-a acima para usá-la.' })
+        const itens = q!.blocos.reduce((s, b) => s + b.itens.length, 0)
+        setAviso({ tipo: 'sucesso', texto: `Versão "${nome}" importada: ${q!.blocos.length} blocos e ${itens} perguntas. Selecione-a em Versão do questionário.` })
       }
     } catch (err) { setAviso({ tipo: 'erro', texto: `Não foi possível importar: ${(err as Error).message}` }) } finally { e.target.value = '' }
+  }
+
+  async function baixarModeloExcel() {
+    const q: Questionario = await (await fetch(MODELO_JSON)).json()
+    XLSX.writeFile(planilhaDoQuestionario(q), 'modelo-questionario-epf.xlsx')
   }
 
   if (!c) return <div className="epf-esqueleto" style={{ height: 200 }} aria-busy="true" aria-label="Carregando" />
@@ -90,7 +108,19 @@ export default function Configuracao() {
           </button>
         )}
       </div>
-      {aviso && <div className={`epf-aviso epf-aviso--${aviso.tipo}`} role={aviso.tipo === 'erro' ? 'alert' : 'status'}>{aviso.texto}</div>}
+      {aviso && (
+        <div className={`epf-aviso epf-aviso--${aviso.tipo}`} role={aviso.tipo === 'erro' ? 'alert' : 'status'}>
+          <div className="epf-pilha" style={{ gap: 6 }}>
+            <span>{aviso.texto}</span>
+            {aviso.detalhes && (
+              <ul style={{ margin: 0, paddingLeft: 20 }}>
+                {aviso.detalhes.slice(0, 10).map((d) => <li key={d}>{d}</li>)}
+                {aviso.detalhes.length > 10 && <li>e mais {aviso.detalhes.length - 10} problema(s).</li>}
+              </ul>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="grade-config">
         <form onSubmit={(e) => salvar(e)} className="epf-cartao epf-pilha" style={{ gap: 18 }}>
@@ -146,11 +176,18 @@ export default function Configuracao() {
           )}
           <section className="epf-cartao epf-pilha" aria-label="Questionário">
             <h2 className="epf-h5">Questionário</h2>
-            <p className="epf-texto-2" style={{ margin: 0 }}>Uma revisão do questionário vira uma versão nova; campanhas antigas continuam com a versão com que foram aplicadas.</p>
+            <p className="epf-texto-2" style={{ margin: 0 }}>Uma revisão do questionário vira uma versão nova, com o nome do arquivo. Campanhas antigas continuam com a versão com que foram aplicadas.</p>
             <label className="epf-btn epf-btn--secundario epf-btn--p" style={{ alignSelf: 'flex-start' }}>
-              Importar nova versão (.json)
-              <input type="file" accept=".json" className="visualmente-oculto" onChange={(e) => arquivo(e, 'instrumento')} />
+              Importar nova versão (Excel ou JSON)
+              <input type="file" accept=".xlsx,.json" className="visualmente-oculto" onChange={(e) => arquivo(e, 'instrumento')} />
             </label>
+            <div className="epf-pilha" style={{ gap: 4 }}>
+              <span className="epf-legenda">Modelos com o questionário EPF 2026 já preenchido, para editar:</span>
+              <div className="epf-linha">
+                <button type="button" className="epf-btn epf-btn--fantasma epf-btn--p" onClick={baixarModeloExcel}>Baixar modelo Excel</button>
+                <a className="epf-btn epf-btn--fantasma epf-btn--p" href={MODELO_JSON} download="modelo-questionario-epf.json">Baixar modelo JSON</a>
+              </div>
+            </div>
           </section>
         </div>
       </div>

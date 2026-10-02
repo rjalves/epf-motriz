@@ -22,6 +22,7 @@ PLANO = os.path.join(os.path.dirname(__file__), '..', 'src', 'gestao', '__fixtur
 LIMPEZA = ("delete from escola_campanha where campanha_id = '30000000-0000-0000-0000-000000000001' and co_inep not in (91000001, 91000002, 91000003);"
            "delete from escola where rede_id = '10000000-0000-0000-0000-000000000001' and co_inep not in (91000001, 91000002, 91000003);"
            "delete from campanha where slug = 'teste-sul-2';"
+           "delete from instrumento_versao where nome in ('EPF teste xlsx', 'EPF teste json');"
            "delete from auth.users where email in ('nova.escola@teste.org', 'x@teste.org', 'y@teste.org');"
            "update perfil set ativo = true; delete from auditoria;"
            "insert into escola_campanha (campanha_id, co_inep, in_amostra, qt_mat_6, qt_mat_9) values"
@@ -52,6 +53,28 @@ with sync_playwright() as p:
     pg.get_by_role('button', name='Criar campanha').click()
     pg.get_by_role('heading', name='Configurar campanha').wait_for()
     check('cria campanha nova e abre a configuração', sql("select count(*) from campanha where slug = 'teste-sul-2'") == '1')
+
+    # Questionário: baixar os modelos, importar em Excel e em JSON, nome repetido e arquivo fora do modelo.
+    importar = pg.locator('input[accept=".xlsx,.json"]')
+    def aviso_apos(arquivo):
+        importar.set_input_files(arquivo)
+        pg.get_by_text(re.compile('importada:|Não foi possível importar')).first.wait_for()
+        return pg.locator('.epf-aviso').first.inner_text()
+    with pg.expect_download() as d: pg.get_by_role('button', name='Baixar modelo Excel').click()
+    xlsx = os.path.join(OUT, 'EPF teste xlsx.xlsx'); d.value.save_as(xlsx)
+    with pg.expect_download() as d: pg.get_by_role('link', name='Baixar modelo JSON').click()
+    js = os.path.join(OUT, 'EPF teste json.json'); d.value.save_as(js)
+    check('baixa os modelos Excel e JSON', open(xlsx, 'rb').read(2) == b'PK' and len(json.load(open(js))['blocos']) == 9)
+    check('importa questionário pelo modelo Excel', 'Versão "EPF teste xlsx" importada: 9 blocos e 84 perguntas' in aviso_apos(xlsx))
+    check('nova versão aparece na lista', pg.locator('select').nth(1).locator('option', has_text='EPF teste xlsx').count() == 1)
+    check('importa questionário pelo modelo JSON', 'Versão "EPF teste json" importada: 9 blocos e 84 perguntas' in aviso_apos(js))
+    check('mesmo nome de versão é recusado', 'já existe uma versão chamada "EPF teste json"' in aviso_apos(js))
+    check('planilha fora do modelo é recusada com orientação', 'abas "Blocos" e "Itens"' in aviso_apos(PLANO))
+    check('itens importados pelo Excel iguais aos da versão original', sql(
+        "select count(*) from (select i.codigo, i.tipo, i.opcoes, i.depende_de from item i join bloco b on b.id = i.bloco_id"
+        " join instrumento_versao v on v.id = b.versao_id where v.nome = 'EPF teste xlsx'"
+        " except select i.codigo, i.tipo, i.opcoes, i.depende_de from item i join bloco b on b.id = i.bloco_id"
+        " join instrumento_versao v on v.id = b.versao_id where v.nome = 'EPF 2026 v1') x") == '0')
 
     pg = entrar(b, 'gestor.norte@teste.org')
     pg.get_by_role('link', name='Usuários').click(); pg.locator('tr', has_text='Gestor Norte').wait_for()

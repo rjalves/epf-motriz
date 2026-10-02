@@ -113,7 +113,7 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
 3. **Usuários:** convide o gestor da rede; ele convida as regionais e os pontos focais das escolas.
 4. **Abrir a coleta:** interruptor "Coleta aberta" na configuração. Link e QR aparecem para os perfis de rede e escola.
 5. **Durante a janela:** Relatório diário (modelo 2.C) + CSV das escolas para o ponto focal da secretaria.
-6. **Nova versão do questionário:** `npx tsx scripts/gerar-instrumento.ts <xlsx> "<nome>"`, revise `supabase/instrumento/*.json` e importe pela Configuração.
+6. **Nova versão do questionário:** Configuração → Questionário → baixe o modelo Excel ou JSON (já com o EPF 2026), edite e importe; o nome do arquivo vira o nome da versão. O modelo JSON é `public/modelos/modelo-questionario-epf.json` (cópia de `supabase/instrumento/epf-2026-v1.json`); o Excel é gerado dele na hora (`src/gestao/questionario.ts`).
 
 ## Privacidade (LGPD)
 

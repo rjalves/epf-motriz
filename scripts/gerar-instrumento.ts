@@ -3,14 +3,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import * as XLSX from 'xlsx'
 
-type Tipo = 'likert5' | 'unica' | 'multipla' | 'texto' | 'numero'
-export type Item = {
-  codigo: string; enunciado: string; orientacao: string | null; tipo: Tipo; opcoes: string[]
-  max_escolhas: number | null; obrigatorio: boolean; reverso: boolean; construto: string | null
-  depende_de: { item: string; valor: string } | null
-}
-export type Bloco = { codigo: string; titulo: string; introducao: string | null; series: number[] | null; itens: Item[] }
-export type Instrumento = { blocos: Bloco[] }
+import type { Bloco, Item, Questionario as Instrumento, Tipo } from '../src/gestao/questionario'
 
 const TIPO: Record<string, Tipo> = { likert_5: 'likert5', 'categórico': 'unica', 'múltipla_escolha': 'multipla', texto_livre: 'texto' }
 const FORA = new Set(['A1', 'A5', 'A6'])          // vêm do cadastro
