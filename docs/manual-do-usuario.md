@@ -61,7 +61,7 @@ O painel não usa senha. A cada entrada, você recebe por e-mail um código de 6
 - ao gestor da sua rede, se você é de uma regional ou de uma escola;
 - à Motriz, nos demais casos.
 
-**Primeiro acesso:** o convite chega por e-mail ("Seu acesso ao painel EPF") com o endereço do painel. Entre pelos passos acima, com o e-mail em que recebeu o convite.
+**Primeiro acesso:** o convite chega por e-mail ("Seu código de acesso ao painel EPF"), com um código e o botão **Abrir o painel**. Entre pelos passos acima, com o e-mail em que recebeu o convite. Se o código do convite vencer (1 hora), peça outro na tela de login.
 
 ---
 
@@ -134,7 +134,7 @@ Depois do último dia da janela, a pesquisa fica encerrada para os estudantes me
    - **Admin Motriz** e **Pesquisador**: não têm rede, porque veem todas.
 4. Clique em **Enviar convite por e-mail**. A pessoa recebe um e-mail com o endereço do painel e entra com o código de 6 dígitos.
 
-Se aparecer "o e-mail de convite não saiu", o acesso foi criado mesmo assim: avise a pessoa para entrar no painel com aquele e-mail. Se o e-mail já tiver acesso ou um convite pendente, a plataforma avisa e não envia outro.
+Se aparecer "o e-mail não saiu", o acesso foi criado mesmo assim: avise a pessoa para entrar no painel com aquele e-mail. Se o e-mail já tiver acesso ou um convite pendente, a plataforma avisa e não envia outro.
 
 **Sequência recomendada por campanha:** o admin convida o gestor da rede, e o gestor convida as regionais e os pontos focais das escolas.
 

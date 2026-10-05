@@ -1,21 +1,8 @@
-# Teste de ponta a ponta: configuração de campanha (admin) e gestão de usuários (gestor), incluindo a Edge Function de convite.
-# Requer: supabase start com edge-runtime + npm run dev, e supabase/functions/.env apontando o Resend
-# para o falso deste teste (ver README). Uso: python3 e2e/configuracao.py /tmp
-import json, os, re, sys, threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
+# Teste de ponta a ponta: configuração de campanha (admin) e gestão de usuários (gestor), incluindo o convite.
+# Requer: supabase start + npm run dev. Uso: python3 e2e/configuracao.py /tmp
+import json, os, re, sys, time
 from playwright.sync_api import sync_playwright
-from util import BASE, check, entrar, resumo, sql
-
-# Resend falso: registra o que a Edge Function enviaria pela API.
-enviados = []
-class ResendFalso(BaseHTTPRequestHandler):
-    def do_POST(self):
-        corpo = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-        enviados.append({'caminho': self.path, 'auth': self.headers.get('Authorization'), **corpo})
-        self.send_response(200); self.send_header('Content-Type', 'application/json'); self.end_headers()
-        self.wfile.write(b'{"id":"falso"}')
-    def log_message(self, *a): pass
-threading.Thread(target=HTTPServer(('0.0.0.0', 58025), ResendFalso).serve_forever, daemon=True).start()
+from util import BASE, check, codigo_recebido, entrar, ids_emails, resumo, sql
 
 OUT = sys.argv[1]
 PLANO = os.path.join(os.path.dirname(__file__), '..', 'src', 'gestao', '__fixtures__', 'plano-natal.xlsx')
@@ -83,35 +70,27 @@ with sync_playwright() as p:
     check('gestor não tem botão para o próprio perfil', 'Gestor Norte' in pg.locator('table').inner_text() and pg.locator('tr', has_text='Gestor Norte').get_by_role('button').count() == 0)
     pg.get_by_label('E-mail institucional').fill('nova.escola@teste.org'); pg.get_by_label('Nome', exact=True).fill('Escola Beta')
     pg.get_by_label('Ponto focal da escola').check(); pg.locator('form select').last.select_option(label='EM BETA')
+    antes = ids_emails('nova.escola@teste.org')
     pg.get_by_role('button', name='Enviar convite por e-mail').click()
-    pg.get_by_text(re.compile('Convite enviado|Não foi possível convidar')).wait_for()
-    check('convite enviado pela Edge Function', pg.get_by_text('Convite enviado para nova.escola@teste.org.').is_visible())
+    pg.get_by_text(re.compile('Convite enviado|Não foi possível convidar|não saiu')).wait_for()
+    check('convite criado pelo banco, sem Edge Function', pg.get_by_text('Convite enviado para nova.escola@teste.org').is_visible())
     check('perfil criado com o escopo certo', sql("select papel || ':' || co_inep from perfil p join auth.users u on u.id = p.user_id where u.email = 'nova.escola@teste.org'") == 'escola:91000002')
-    convite = next((e for e in enviados if e.get('to') == ['nova.escola@teste.org']), None)
-    check('convite enviado pela API do Resend', convite is not None and convite['caminho'] == '/emails' and convite['auth'] == 'Bearer re_teste'
-          and 'http://localhost:5173/painel' in convite['html'] and 'Escola Beta' in convite['html'])
+    check('convidado recebe o código de acesso por e-mail', re.fullmatch(r'\d{6}', codigo_recebido('nova.escola@teste.org', antes)) is not None)
+    time.sleep(1.5)  # intervalo mínimo entre códigos para o mesmo e-mail (max_frequency local = 1s)
     convidado = entrar(b, 'nova.escola@teste.org')
     check('convidado entra com o código como ponto focal', 'ponto focal da escola' in convidado.locator('.epf-topo').inner_text().lower())
     convidado.context.close()
     check('convite registrado na auditoria', sql("select count(*) from auditoria where acao = 'convidar_usuario' and alvo like 'nova.escola%'") == '1')
 
-    chamar = """async (corpo) => {
-      const chave = Object.keys(localStorage).find((k) => k.endsWith('-auth-token'))
-      const token = JSON.parse(localStorage.getItem(chave)).access_token
-      const r = await fetch('http://127.0.0.1:56421/functions/v1/convidar-usuario', { method: 'POST',
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) })
-      return [r.status, await r.json()]
-    }"""
-    st, corpo = pg.evaluate(chamar, {'email': 'x@teste.org', 'papel': 'admin'})
-    check('função recusa gestor criando admin (403)', st == 403 and corpo.get('erro') == 'sem_permissao')
-    st, corpo = pg.evaluate(chamar, {'email': 'y@teste.org', 'papel': 'escola', 'rede_id': '10000000-0000-0000-0000-000000000001', 'co_inep': 92000001})
-    check('função recusa escola de outra rede e desfaz o convite', st == 400 and sql("select count(*) from auth.users where email = 'y@teste.org'") == '0')
-    # Convite duplicado: outro gestor convida o mesmo e-mail pendente — não pode apagar o usuário existente
+    # Outro gestor tenta convidar o mesmo e-mail: recusado, e o usuário existente fica como estava.
     pg_sul = entrar(b, 'gestor.sul@teste.org')
-    st, corpo = pg_sul.evaluate(chamar, {'email': 'nova.escola@teste.org', 'nome': 'Intruso', 'papel': 'escola',
-                                         'rede_id': '10000000-0000-0000-0000-000000000002', 'co_inep': 92000001})
-    check('convite duplicado é recusado (409)', st == 409 and corpo.get('erro') == 'email_ja_cadastrado')
-    check('usuário convidado antes continua existindo com o mesmo perfil',
+    pg_sul.get_by_role('link', name='Usuários').click(); pg_sul.locator('tr', has_text='Gestor Sul').wait_for()
+    pg_sul.get_by_label('E-mail institucional').fill('Nova.Escola@teste.org'); pg_sul.get_by_label('Nome', exact=True).fill('Intruso')
+    pg_sul.get_by_label('Ponto focal da escola').check(); pg_sul.locator('form select').last.select_option(label='EM DELTA')
+    pg_sul.get_by_role('button', name='Enviar convite por e-mail').click()
+    pg_sul.get_by_text(re.compile('Convite enviado|Não foi possível convidar')).wait_for()
+    check('convite duplicado é recusado com explicação', pg_sul.get_by_text('este e-mail já tem acesso').is_visible())
+    check('usuário convidado antes continua com o mesmo perfil',
           sql("select papel || ':' || co_inep from perfil p join auth.users u on u.id = p.user_id where u.email = 'nova.escola@teste.org'") == 'escola:91000002')
 
     pg.locator('tr', has_text='Escola Alfa').get_by_role('button', name='Desativar').click()

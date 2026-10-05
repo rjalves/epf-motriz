@@ -18,8 +18,7 @@ src/
   design-system/ tokens.css, components.css, assets (cópia de ../design-system)
 supabase/
   migrations/    001–007 estrutura (iguais a ../database/001), 008 questionário EPF 2026, 009 redes, 010 correções (= ../database/003)
-  tests/         pgTAP (92 verificações)
-  functions/     convidar-usuario (Edge Function)
+  tests/         pgTAP (103 verificações)
   seed.sql       dados de teste locais (Rede Norte/Sul, usuários @teste.org)
 scripts/         testar-banco.sh, gerar-instrumento.ts, extrair-secao.py
 e2e/             Playwright: estudante, gestão por perfil, configuração e convites
@@ -31,20 +30,12 @@ Requer Node 20+, Docker e Python 3 com Playwright (`pip install playwright && pl
 
 ```bash
 npm install
-npx supabase start -x realtime,storage-api,imgproxy,logflare,vector,supavisor,studio,postgres-meta
+npx supabase start -x realtime,storage-api,imgproxy,logflare,vector,supavisor,studio,postgres-meta,edge-runtime
 cp .env.example .env   # preencha com a API URL e a anon key que o comando acima imprime
 npm run dev            # http://localhost:5173/responder/teste-norte  e  http://localhost:5173/painel
 ```
 
-As portas locais do Supabase estão em 564xx (`supabase/config.toml`), porque 543xx e 553xx já eram usadas por outros projetos nesta máquina. Os códigos de acesso locais chegam no Mailpit: http://127.0.0.1:56424. Os convites saem pela API do Resend; localmente, `supabase/functions/.env` (git-ignorado, crie antes do `supabase start`) aponta para o Resend falso do e2e:
-
-```
-RESEND_API_URL=http://host.docker.internal:58025/emails
-RESEND_API_KEY=re_teste
-EMAIL_REMETENTE=EPF <nao-responda@teste.org>
-```
-
-Sem esse arquivo, o convite cria o acesso e a tela avisa que o e-mail não saiu.
+As portas locais do Supabase estão em 564xx (`supabase/config.toml`), porque 543xx e 553xx já eram usadas por outros projetos nesta máquina. Os códigos de acesso locais (login e convites) chegam no Mailpit: http://127.0.0.1:56424.
 
 Usuários de teste (entre com o código de 6 dígitos que chega no Mailpit): `admin@`, `pesquisa@`, `gestor.norte@`, `regional.n1@`, `escola.alfa@`, `gestor.sul@` + `teste.org`.
 
@@ -52,8 +43,8 @@ Usuários de teste (entre com o código de 6 dígitos que chega no Mailpit): `ad
 
 ```bash
 npm test                   # unitários (Vitest): regras de cadastro, ramificação, capacidades, relatório, plano amostral, gerador
-scripts/testar-banco.sh    # banco (pgTAP) num Postgres descartável: 92 verificações
-e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 17 + 17 + 17 verificações
+scripts/testar-banco.sh    # banco (pgTAP) num Postgres descartável: 103 verificações
+e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 17 + 17 + 22 verificações
 npm run build
 ```
 
@@ -70,14 +61,9 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    ```
 2. **Histórico de migrações**, para `supabase db push` futuros não reaplicarem o que já existe:
    ```bash
-   npx supabase migration repair --db-url "$DATABASE_URL" --status applied 20260929000001 20260929000002 20260929000003 20260929000004 20260929000005 20260929000006 20260929000007 20260929000008 20260929000009 20260930000010
+   npx supabase migration repair --db-url "$DATABASE_URL" --status applied 20260929000001 20260929000002 20260929000003 20260929000004 20260929000005 20260929000006 20260929000007 20260929000008 20260929000009 20260930000010 20261005000011
    ```
-3. **Edge Function:** copie `supabase/functions/convidar-usuario/` para `volumes/functions/` do docker-compose do Supabase. No serviço `functions`, defina:
-   ```
-   SITE_URL=https://deploy-epf.9bkmfg.easypanel.host
-   RESEND_API_KEY=<chave do Resend>
-   EMAIL_REMETENTE=EPF <nao-responda@epf.motriz.org>
-   ```
+3. **Convite sem Edge Function** (migração 011 = `../database/005_convite_no_banco.sql`): rode o arquivo no SQL Editor. O convite cria o usuário e o perfil no banco (`convidar_usuario`) e a tela pede o envio do código de acesso, que sai pelo SMTP do Auth (Resend). Não há função para publicar nem variáveis no serviço `functions`.
 4. **Auth (login por código de 6 dígitos, e-mails pelo Resend):** no `.env` do Supabase:
    ```
    SITE_URL=https://deploy-epf.9bkmfg.easypanel.host

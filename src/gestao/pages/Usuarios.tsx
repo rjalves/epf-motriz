@@ -35,27 +35,29 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
     e.preventDefault()
     setEnviando(true)
     const precisaRede = !['admin', 'pesquisador'].includes(novo.papel)
-    const { data, error } = await sb.functions.invoke('convidar-usuario', { body: {
-      email: novo.email, nome: novo.nome, papel: novo.papel,
-      rede_id: precisaRede ? novo.rede_id : null,
-      regional_id: novo.papel === 'regional' ? novo.regional_id : null,
-      co_inep: novo.papel === 'escola' ? Number(novo.co_inep) : null } })
-    setEnviando(false)
+    const email = novo.email.trim().toLowerCase()
+    const { error } = await sb.rpc('convidar_usuario', {
+      p_email: email, p_nome: novo.nome, p_papel: novo.papel,
+      p_rede: precisaRede ? novo.rede_id || null : null,
+      p_regional: novo.papel === 'regional' ? novo.regional_id || null : null,
+      p_co_inep: novo.papel === 'escola' ? Number(novo.co_inep) : null })
     if (error) {
-      // Erros da função vêm em "erro"; os do runtime (função não publicada, falha ao iniciar) vêm em "msg".
-      const corpo = await (error as { context?: Response }).context?.json().catch(() => null)
-      const motivo: string | null = corpo?.erro ?? (/entrypoint|InvalidWorkerCreation/.test(corpo?.msg ?? '')
-        ? 'a função de convite não está publicada no servidor (convidar-usuario)' : corpo?.msg ?? null)
+      setEnviando(false)
       const TEXTO: Record<string, string> = {
         email_ja_cadastrado: 'este e-mail já tem acesso ou um convite pendente',
         sem_permissao: 'seu perfil não pode convidar para este perfil ou rede',
         escopo_incoerente: 'a escola ou regional não pertence à rede escolhida',
+        email_invalido: 'confira o e-mail digitado',
       }
-      return setAviso({ tipo: 'erro', texto: `Não foi possível convidar: ${(motivo && TEXTO[motivo]) ?? motivo ?? error.message}.` })
+      const motivo = Object.keys(TEXTO).find((k) => error.message.includes(k))
+      return setAviso({ tipo: 'erro', texto: `Não foi possível convidar: ${motivo ? TEXTO[motivo] : error.message}.` })
     }
-    setAviso(data?.email_enviado
-      ? { tipo: 'sucesso', texto: `Convite enviado para ${novo.email}.` }
-      : { tipo: 'atencao', texto: `Acesso criado para ${novo.email}, mas o e-mail de convite não saiu. Avise a pessoa para entrar em ${location.origin}/painel com este e-mail.` })
+    // O acesso já existe; o aviso é o e-mail do código, o mesmo do login.
+    const { error: falhaEnvio } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false } })
+    setEnviando(false)
+    setAviso(falhaEnvio
+      ? { tipo: 'atencao', texto: `Acesso criado para ${email}, mas o e-mail não saiu (${falhaEnvio.message}). Avise a pessoa para entrar em ${location.origin}/painel com este e-mail.` }
+      : { tipo: 'sucesso', texto: `Convite enviado para ${email}. A pessoa recebeu por e-mail um código para entrar no painel.` })
     setNovo({ ...novo, email: '', nome: '' }); carregar()
   }
 
@@ -123,7 +125,7 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
             <label className="epf-campo">Escola<select className="epf-select epf-select--p" required value={novo.co_inep} onChange={(e) => setNovo({ ...novo, co_inep: e.target.value })}>
               <option value="">Escolha</option>{escolas.filter((x) => x.rede_id === novo.rede_id).map((x) => <option key={x.co_inep} value={x.co_inep}>{x.nome}</option>)}</select></label>)}
           <button className="epf-btn epf-btn--primario" disabled={enviando} aria-busy={enviando}>{enviando ? 'Enviando…' : 'Enviar convite por e-mail'}</button>
-          <p className="epf-legenda" style={{ margin: 0 }}>A pessoa recebe um e-mail com o endereço do painel e entra com um código enviado na hora. Convites e desativações ficam registrados na auditoria.</p>
+          <p className="epf-legenda" style={{ margin: 0 }}>A pessoa recebe por e-mail um código e o endereço do painel. Se o código vencer, ela pede outro na tela de login. Convites e desativações ficam registrados na auditoria.</p>
         </form>
       </div>
     </div>
