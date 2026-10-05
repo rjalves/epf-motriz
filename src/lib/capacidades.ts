@@ -2,7 +2,7 @@
 export type Papel = 'admin' | 'gestor_rede' | 'regional' | 'escola' | 'pesquisador'
 export type Acao =
   | 'configurar_campanha' | 'importar_amostra' | 'ver_painel' | 'ver_link_pesquisa'
-  | 'baixar_relatorio' | 'exportar_respostas' | 'gerir_usuarios'
+  | 'baixar_relatorio' | 'exportar_respostas' | 'gerir_usuarios' | 'excluir_campanha'
 
 const MATRIZ: Record<Acao, Papel[]> = {
   configurar_campanha: ['admin'],
@@ -12,6 +12,7 @@ const MATRIZ: Record<Acao, Papel[]> = {
   baixar_relatorio: ['admin', 'gestor_rede', 'regional', 'pesquisador'],
   exportar_respostas: ['admin', 'pesquisador'],
   gerir_usuarios: ['admin', 'gestor_rede'],
+  excluir_campanha: ['admin'],
 }
 
 export const ROTULO_PAPEL: Record<Papel, string> = {

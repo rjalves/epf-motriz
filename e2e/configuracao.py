@@ -63,6 +63,27 @@ with sync_playwright() as p:
         " except select i.codigo, i.tipo, i.opcoes, i.depende_de from item i join bloco b on b.id = i.bloco_id"
         " join instrumento_versao v on v.id = b.versao_id where v.nome = 'EPF 2026 v1') x") == '0')
 
+    # Excluir campanha (admin): com respostas, pede o endereço do link digitado; texto errado não apaga.
+    sql("update campanha set aberta = true, janela_inicio = current_date - 1, janela_fim = current_date + 30 where slug = 'teste-sul-2';"
+        "insert into escola_campanha (campanha_id, co_inep, in_amostra, qt_mat_9) select id, 92000001, true, 10 from campanha where slug = 'teste-sul-2';")
+    sql("select iniciar_sessao('teste-sul-2', 92000001, 9::smallint, (current_date - interval '14 years')::date) from generate_series(1, 2)")
+    pg.goto(f'{BASE}/painel'); linha = pg.locator('tr', has_text='Aplicação 2'); linha.wait_for()
+    check('admin vê Excluir ao lado de Abrir painel', linha.get_by_role('link', name='Abrir painel').is_visible()
+          and linha.get_by_role('button', name=re.compile('^Excluir')).is_visible())
+    dialogos = []
+    def responder(texto):
+        def f(d): dialogos.append(d.message); d.accept(texto)
+        pg.once('dialog', f)
+    responder('outra-coisa'); linha.get_by_role('button', name=re.compile('^Excluir')).click()
+    pg.get_by_text('não confere').wait_for()
+    check('confirmação avisa quantas respostas serão apagadas', '2 respostas' in dialogos[0])
+    check('texto errado não exclui', sql("select count(*) from campanha where slug = 'teste-sul-2'") == '1')
+    responder('teste-sul-2'); linha.get_by_role('button', name=re.compile('^Excluir')).click()
+    pg.get_by_text('excluída').wait_for()
+    check('campanha excluída com as respostas', sql("select count(*) from campanha where slug = 'teste-sul-2'") == '0'
+          and pg.locator('tr', has_text='Aplicação 2').count() == 0)
+    check('exclusão registrada na auditoria', sql("select alvo from auditoria where acao = 'excluir_campanha'") == 'teste-sul-2 (2 sessões)')
+
     pg = entrar(b, 'gestor.norte@teste.org')
     pg.get_by_role('link', name='Usuários').click(); pg.locator('tr', has_text='Gestor Norte').wait_for()
     perfis = [pg.locator('fieldset label').nth(i).inner_text().split('\n')[0] for i in range(pg.locator('fieldset label').count())]

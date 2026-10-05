@@ -36,6 +36,7 @@ A plataforma tem duas partes:
 | Criar e configurar campanhas | ✔ | — | — | — | — |
 | Importar plano amostral e questionário | ✔ | — | — | — | — |
 | Abrir e fechar a coleta | ✔ | — | — | — | — |
+| Excluir campanha | ✔ | — | — | — | — |
 | Convidar e desativar usuários | Todos os perfis | Regionais e escolas da sua rede | — | — | — |
 | Consultar nomes e contatos dos estudantes | ✔ (com registro em auditoria) | — | — | — | — |
 
@@ -122,6 +123,16 @@ O Excel em `/Instrumento` é o documento de autoria do questionário (texto livr
 2. Ao fechar, a plataforma pede confirmação. Quem estiver respondendo naquele momento não consegue mais enviar.
 
 Depois do último dia da janela, a pesquisa fica encerrada para os estudantes mesmo com o interruptor ligado.
+
+### 3.4.1 Excluir uma campanha
+
+1. Em **Campanhas**, clique em **Excluir**, ao lado de **Abrir painel**. A opção aparece só para o admin.
+2. Leia a confirmação: a exclusão apaga o plano amostral, os cadastros e **todas as respostas dos estudantes** daquela campanha, e não há como desfazer.
+   - Campanha sem respostas: confirme no diálogo.
+   - Campanha com respostas: o diálogo diz quantas são e pede que você digite o endereço do link da campanha (ex.: `natal-2026-1`). Se o texto não conferir, nada é excluído.
+3. A exclusão fica registrada na auditoria, com quem excluiu e quantas respostas foram apagadas.
+
+Antes de excluir uma campanha com respostas, exporte os dados (seção [7.2](#72-exportar-as-respostas)) se eles ainda forem necessários.
 
 ### 3.5 Convidar usuários
 

@@ -45,3 +45,5 @@
 @media (max-width: 1024px) { .grade-config, .grade-usuarios { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .grade-campos { grid-template-columns: 1fr; } }
 .rodape-painel { padding-top: 20px; padding-bottom: 28px; border-top: 1px solid var(--epf-linha); color: var(--epf-texto-2); }
+.btn-excluir { color: var(--epf-erro); }
+.btn-excluir:hover { background: var(--epf-erro-fundo); }

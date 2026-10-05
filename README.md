@@ -18,7 +18,7 @@ src/
   design-system/ tokens.css, components.css, assets (cópia de ../design-system)
 supabase/
   migrations/    001–007 estrutura (iguais a ../database/001), 008 questionário EPF 2026, 009 redes, 010 correções (= ../database/003)
-  tests/         pgTAP (122 verificações)
+  tests/         pgTAP (129 verificações)
   seed.sql       dados de teste locais (Rede Norte/Sul, usuários @teste.org)
 scripts/         testar-banco.sh, gerar-instrumento.ts, extrair-secao.py
 e2e/             Playwright: estudante, gestão por perfil, configuração e convites
@@ -43,8 +43,8 @@ Usuários de teste (o código chega ao Resend falso dos e2e): `admin@`, `pesquis
 
 ```bash
 npm test                   # unitários (Vitest): regras de cadastro, ramificação, capacidades, relatório, plano amostral, gerador
-scripts/testar-banco.sh    # banco (pgTAP) num Postgres descartável: 122 verificações
-e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 21 + 17 + 22 verificações
+scripts/testar-banco.sh    # banco (pgTAP) num Postgres descartável: 129 verificações
+e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 21 + 18 + 27 verificações
 npm run build
 ```
 
@@ -61,7 +61,7 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    ```
 2. **Histórico de migrações**, para `supabase db push` futuros não reaplicarem o que já existe:
    ```bash
-   npx supabase migration repair --db-url "$DATABASE_URL" --status applied 20260929000001 20260929000002 20260929000003 20260929000004 20260929000005 20260929000006 20260929000007 20260929000008 20260929000009 20260930000010 20261005000011 20261005000012 20261005000013 20261006000014
+   npx supabase migration repair --db-url "$DATABASE_URL" --status applied 20260929000001 20260929000002 20260929000003 20260929000004 20260929000005 20260929000006 20260929000007 20260929000008 20260929000009 20260930000010 20261005000011 20261005000012 20261005000013 20261006000014 20261006000015
    ```
 3. **Login e convite por código, e-mail direto pelo Resend** (migrações 011–013 = `../database/006_acesso_por_codigo.sql`): rode o arquivo no SQL Editor e preencha a configuração do fim dele:
    ```sql
@@ -72,6 +72,7 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    ```
    O banco gera o código, envia o e-mail com o modelo do EPF pela API do Resend (`pg_net`) e emite a sessão do painel (JWT de 12 h assinado com o `JWT_SECRET` do Supabase, lido de `app.settings.jwt_secret`; se não existir, grave-o em `config_privada` como `jwt_secret`). O Auth do Supabase (GoTrue) não envia nada: não há SMTP, modelos `GOTRUE_MAILER_*` nem Edge Function para configurar. Os modelos são gerados por `npx tsx scripts/gerar-emails.ts`. Diagnóstico dos envios: consulta no fim do `006`.
 4. **Cadastro do estudante sem nome** (migração 014 = `../database/007_cadastro_sem_nome.sql`): rode no SQL Editor. Cada início é uma resposta nova; a retomada vale só no mesmo aparelho.
+   Exclusão de campanha pelo admin: migração 015 = `../database/008_excluir_campanha.sql`.
 5. **Ao trocar o `JWT_SECRET`** do Supabase, as sessões abertas caem (todos entram de novo com código); nada mais a fazer.
 6. **Frontend (Easypanel):** serviço *App* apontando para este repositório, build por **Dockerfile** (nginx com fallback de SPA, porta 80). Em *Environment*, defina `VITE_SUPABASE_URL` e a `VITE_SUPABASE_ANON_KEY` **nova** — viram build args e são embutidas no build; sem elas o build falha de propósito.
 7. **Primeiro admin:** crie o usuário no Studio (*Authentication → Add user*, com "Auto Confirm User") e rode

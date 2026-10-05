@@ -44,6 +44,7 @@ with sync_playwright() as p:
     pg.get_by_role('heading', name='Campanhas de aplicação').wait_for(); pg.locator('table.epf-tabela').wait_for()
     check('gestor vê só a campanha da própria rede', pg.locator('table.epf-tabela tbody tr').count() == 1 and 'Rede Norte' in pg.locator('table.epf-tabela').inner_text())
     check('gestor vê o menu Usuários', pg.get_by_role('link', name='Usuários').is_visible())
+    check('gestor não vê a opção de excluir campanha', pg.get_by_role('button', name=re.compile('^Excluir')).count() == 0)
     pg.get_by_role('link', name='Abrir painel').click(); pg.get_by_role('heading', name=re.compile('^Escolas')).wait_for()
     check('gestor vê as 3 escolas da rede', pg.locator('table.epf-tabela tbody tr').count() == 3)
     check('ordem: quem precisa de apoio primeiro (ALFA iniciada antes de BETA concluída)',
