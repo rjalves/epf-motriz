@@ -18,6 +18,15 @@ with sync_playwright() as p:
     pg.goto(f'{BASE}/responder/teste-norte'); pg.get_by_role('heading', name='Olá!').wait_for()
     pg.screenshot(path=f'{OUT}/1-boas-vindas.png', full_page=True)
     pg.get_by_role('button', name='Começar').click()
+    pg.get_by_role('button', name='Sim, aceito participar').wait_for()
+    check('termo apresenta o texto da Secretaria', all(pg.get_by_text(t).is_visible() for t in (
+        'A Secretaria Municipal de Educação criou este questionário para entender como é o seu dia a dia na escola',
+        'Fique tranquilo(a): isto não é uma prova!', 'Queremos planejar o futuro da escola junto com você!',
+        'Sua participação é voluntária, mas sua voz é fundamental')))
+    pergunta = pg.get_by_role('heading', name='Você aceita participar?').bounding_box()
+    check('"Você aceita participar?" fica logo acima dos botões',
+          pergunta['y'] < pg.get_by_role('button', name='Sim, aceito participar').bounding_box()['y'])
+    pg.screenshot(path=f'{OUT}/1b-assentimento.png', full_page=True)
     pg.get_by_role('button', name='Sim, aceito participar').click()
     pg.get_by_label('Sua escola').select_option(label='EM ALFA')
     pg.get_by_label('6º ano').check()

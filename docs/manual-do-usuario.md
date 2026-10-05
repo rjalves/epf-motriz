@@ -280,12 +280,9 @@ O estudante não precisa de login, só do link ou do QR code que a escola divulg
 
 1. **Abra o link** (ou aponte a câmera para o QR code).
 2. **Boas-vindas**: leia a apresentação e toque em **Começar**.
-3. **Antes de começar**: leia as regras.
-   - Não é prova, não há respostas certas ou erradas.
-   - É voluntário: você pode parar quando quiser.
-   - É confidencial: o estudante não informa o nome.
+3. **Antes de começar**: leia o texto da Secretaria ("Olá! Queremos te ouvir."). Ele explica que o questionário não é prova, que não há respostas certas ou erradas, que as respostas são confidenciais e que a participação é voluntária.
 
-   Toque em **Sim, aceito participar** ou em **Não quero participar**.
+   Em **Você aceita participar?**, toque em **Sim, aceito participar** ou em **Não quero participar**.
 4. **Seus dados**: preencha
    - **Escola** (escolha na lista);
    - **Em que ano você estuda?**;

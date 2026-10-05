@@ -147,12 +147,14 @@ export default function Responder() {
 
         {tela === 'assentimento' && (<>
           <span className="epf-sobrelinha">Antes de começar</span>
-          <h1 className="epf-h3">Você aceita participar?</h1>
-          <ul className="garantias">
-            <li><Icone d="M5 12l5 5L20 7" /><span><b>É voluntário.</b> Você pode parar quando quiser, sem problema nenhum.</span></li>
-            <li><Icone d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z" /><span><b>É confidencial.</b> Você não informa seu nome. Ninguém da escola saberá o que você respondeu.</span></li>
-            <li><Icone d="M12 21V3M5 10l7-7 7 7" /><span><b>Sua voz muda a escola.</b> A Secretaria vai usar as respostas para planejar melhorias junto com vocês.</span></li>
-          </ul>
+          <h1 className="epf-h3">Olá! Queremos te ouvir.</h1>
+          <div className="assentimento-texto">
+            <p>A Secretaria Municipal de Educação criou este questionário para entender como é o seu dia a dia na escola e o que você pensa sobre o seu futuro.</p>
+            <p>Fique tranquilo(a): isto não é uma prova! Não existem respostas certas ou erradas. O que importa é a sua opinião sincera sobre como você se sente e como percebe a sua escola. Suas respostas são confidenciais e ninguém da escola saberá o que você respondeu individualmente.</p>
+            <p>Queremos planejar o futuro da escola junto com você! Com a sua resposta, a Secretaria vai saber exatamente o que criar por aqui. Pode ser um novo espaço para vocês conviverem e conversarem, novos canais para darem opiniões e muitas outras melhorias que vamos construir juntos.</p>
+            <p>Sua participação é voluntária, mas sua voz é fundamental para que possamos transformar a escola e torná-la cada vez melhor para você. Vamos começar?</p>
+          </div>
+          <h2 className="epf-h4">Você aceita participar?</h2>
           <div className="estudante__acoes">
             <button className="epf-btn epf-btn--primario epf-btn--g epf-btn--bloco" onClick={() => irPara('cadastro')}>Sim, aceito participar</button>
             <button className="epf-btn epf-btn--secundario epf-btn--g epf-btn--bloco" onClick={() => { recusar(slug).catch(() => {}); irPara('recusou') }}>Não quero participar</button>

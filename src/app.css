@@ -11,9 +11,8 @@
 .boas-vindas p { margin: 0; font-size: 17px; line-height: 1.55; color: var(--epf-texto-inv-2); }
 .boas-vindas footer { max-width: var(--epf-largura-estudante); width: 100%; margin: 0 auto; padding: 20px 24px 28px; display: flex; flex-direction: column; gap: 12px; position: relative; }
 .boas-vindas .simbolo { width: 200px; height: 120px; color: #fff; }
-.garantias { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-.garantias li { display: flex; gap: 14px; align-items: flex-start; background: var(--epf-papel); border: 1px solid var(--epf-linha); border-radius: 16px; padding: 16px; font-size: 16px; line-height: 1.5; }
-.garantias svg { flex-shrink: 0; width: 22px; height: 22px; margin-top: 2px; }
+.assentimento-texto p { margin: 0 0 14px; font-size: 17px; line-height: 1.6; color: var(--epf-texto); max-width: 62ch; }
+.assentimento-texto p:last-child { margin-bottom: 0; }
 .conclusao { text-align: center; align-items: center; padding-top: 64px; }
 .conclusao__check { width: 96px; height: 96px; border-radius: 50%; background: var(--epf-teal-escuro); color: #fff; display: flex; align-items: center; justify-content: center; }
 .conclusao__check svg { width: 48px; height: 48px; }

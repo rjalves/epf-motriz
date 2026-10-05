@@ -44,7 +44,7 @@ Usuários de teste (o código chega ao Resend falso dos e2e): `admin@`, `pesquis
 ```bash
 npm test                   # unitários (Vitest): regras de cadastro, ramificação, capacidades, relatório, plano amostral, gerador
 scripts/testar-banco.sh    # banco (pgTAP) num Postgres descartável: 122 verificações
-e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 19 + 17 + 22 verificações
+e2e/rodar.sh /tmp          # ponta a ponta (com supabase start + npm run dev): 21 + 17 + 22 verificações
 npm run build
 ```
 
