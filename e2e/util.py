@@ -1,8 +1,21 @@
-# Utilidades dos testes de ponta a ponta: login por código de 6 dígitos (Mailpit local), SQL no banco local, checks.
-import json, re, subprocess, time, urllib.request
+# Utilidades dos testes de ponta a ponta: login por código de 6 dígitos, SQL no banco local, checks.
+# O banco envia os e-mails pela API do Resend (pg_net); aqui um Resend falso recebe e guarda cada envio.
+# O seed local aponta config_privada.resend_url para http://host.docker.internal:58025/emails.
+import json, re, subprocess, threading, time
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-BASE, MAIL = 'http://localhost:5173', 'http://127.0.0.1:56424'
+BASE = 'http://localhost:5173'
 resultados = []
+enviados = []  # corpos recebidos pelo Resend falso: from, to, subject, html (+ caminho e auth)
+
+class _ResendFalso(BaseHTTPRequestHandler):
+    def do_POST(self):
+        corpo = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+        enviados.append({'caminho': self.path, 'auth': self.headers.get('Authorization'), **corpo})
+        self.send_response(200); self.send_header('Content-Type', 'application/json'); self.end_headers()
+        self.wfile.write(b'{"id":"falso"}')
+    def log_message(self, *a): pass
+threading.Thread(target=HTTPServer(('0.0.0.0', 58025), _ResendFalso).serve_forever, daemon=True).start()
 
 def check(nome, cond):
     resultados.append(bool(cond)); print(('OK   ' if cond else 'FALHA ') + nome)
@@ -16,18 +29,18 @@ def sql(q):
                           check=True, capture_output=True, text=True).stdout.strip()
 
 def ids_emails(email):
-    with urllib.request.urlopen(f'{MAIL}/api/v1/search?query=to:{email}') as r:
-        return {m['ID'] for m in json.load(r)['messages']}
+    return {i for i, e in enumerate(enviados) if e.get('to') == [email]}
 
-def codigo_recebido(email, antes):
-    # Só e-mails que não existiam antes do clique: um código anterior já não vale.
+def email_recebido(email, antes):
+    # Só e-mails que chegaram depois do clique: um código anterior já não vale.
     for _ in range(40):
         novos = ids_emails(email) - antes
-        if novos:
-            with urllib.request.urlopen(f'{MAIL}/api/v1/message/{novos.pop()}') as r:
-                return re.search(r'\b\d{6}\b', json.load(r)['Text']).group(0)
+        if novos: return enviados[max(novos)]
         time.sleep(0.5)
     raise RuntimeError(f'e-mail não chegou para {email}')
+
+def codigo_recebido(email, antes):
+    return re.search(r'\b\d{6}\b', email_recebido(email, antes)['html']).group(0)
 
 def entrar(b, email, largura=1440):
     pg = b.new_context(viewport={'width': largura, 'height': 900}, locale='pt-BR').new_page()

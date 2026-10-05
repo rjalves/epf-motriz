@@ -36,7 +36,7 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
     setEnviando(true)
     const precisaRede = !['admin', 'pesquisador'].includes(novo.papel)
     const email = novo.email.trim().toLowerCase()
-    const { error } = await sb.rpc('convidar_usuario', {
+    const { data, error } = await sb.rpc('convidar_usuario', {
       p_email: email, p_nome: novo.nome, p_papel: novo.papel,
       p_rede: precisaRede ? novo.rede_id || null : null,
       p_regional: novo.papel === 'regional' ? novo.regional_id || null : null,
@@ -52,11 +52,9 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
       const motivo = Object.keys(TEXTO).find((k) => error.message.includes(k))
       return setAviso({ tipo: 'erro', texto: `Não foi possível convidar: ${motivo ? TEXTO[motivo] : error.message}.` })
     }
-    // O acesso já existe; o aviso é o e-mail do código, o mesmo do login.
-    const { error: falhaEnvio } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false } })
     setEnviando(false)
-    setAviso(falhaEnvio
-      ? { tipo: 'atencao', texto: `Acesso criado para ${email}, mas o e-mail não saiu (${falhaEnvio.message}). Avise a pessoa para entrar em ${location.origin}/painel com este e-mail.` }
+    setAviso(!data?.email_enviado
+      ? { tipo: 'atencao', texto: `Acesso criado para ${email}, mas o e-mail de convite não saiu (envio de e-mail não configurado). Avise a pessoa para entrar em ${location.origin}/painel com este e-mail.` }
       : { tipo: 'sucesso', texto: `Convite enviado para ${email}. A pessoa recebeu por e-mail um código para entrar no painel.` })
     setNovo({ ...novo, email: '', nome: '' }); carregar()
   }

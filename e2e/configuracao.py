@@ -2,7 +2,7 @@
 # Requer: supabase start + npm run dev. Uso: python3 e2e/configuracao.py /tmp
 import json, os, re, sys, time
 from playwright.sync_api import sync_playwright
-from util import BASE, check, codigo_recebido, entrar, ids_emails, resumo, sql
+from util import BASE, check, email_recebido, entrar, ids_emails, resumo, sql
 
 OUT = sys.argv[1]
 PLANO = os.path.join(os.path.dirname(__file__), '..', 'src', 'gestao', '__fixtures__', 'plano-natal.xlsx')
@@ -75,7 +75,10 @@ with sync_playwright() as p:
     pg.get_by_text(re.compile('Convite enviado|Não foi possível convidar|não saiu')).wait_for()
     check('convite criado pelo banco, sem Edge Function', pg.get_by_text('Convite enviado para nova.escola@teste.org').is_visible())
     check('perfil criado com o escopo certo', sql("select papel || ':' || co_inep from perfil p join auth.users u on u.id = p.user_id where u.email = 'nova.escola@teste.org'") == 'escola:91000002')
-    check('convidado recebe o código de acesso por e-mail', re.fullmatch(r'\d{6}', codigo_recebido('nova.escola@teste.org', antes)) is not None)
+    convite = email_recebido('nova.escola@teste.org', antes)
+    check('convite sai pela API do Resend com o modelo do EPF', convite['caminho'] == '/emails' and convite['auth'] == 'Bearer re_teste'
+          and convite['subject'] == 'Você foi convidado para o painel EPF' and 'Escola Beta' in convite['html']
+          and 'Ponto focal da escola' in convite['html'] and re.search(r'\b\d{6}\b', convite['html']) is not None)
     time.sleep(1.5)  # intervalo mínimo entre códigos para o mesmo e-mail (max_frequency local = 1s)
     convidado = entrar(b, 'nova.escola@teste.org')
     check('convidado entra com o código como ponto focal', 'ponto focal da escola' in convidado.locator('.epf-topo').inner_text().lower())

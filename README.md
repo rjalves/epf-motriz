@@ -35,9 +35,9 @@ cp .env.example .env   # preencha com a API URL e a anon key que o comando acima
 npm run dev            # http://localhost:5173/responder/teste-norte  e  http://localhost:5173/painel
 ```
 
-As portas locais do Supabase estão em 564xx (`supabase/config.toml`), porque 543xx e 553xx já eram usadas por outros projetos nesta máquina. Os códigos de acesso locais (login e convites) chegam no Mailpit: http://127.0.0.1:56424.
+As portas locais do Supabase estão em 564xx (`supabase/config.toml`), porque 543xx e 553xx já eram usadas por outros projetos nesta máquina. Localmente os e-mails (código e convite) vão para o Resend falso dos e2e (`e2e/util.py`, porta 58025), configurado no `seed.sql`. Para entrar à mão no painel local: peça o código na tela, gere outro com `docker exec supabase_db_epf-monitor psql -U postgres -tAc "select _novo_codigo('admin@teste.org')"` e digite esse.
 
-Usuários de teste (entre com o código de 6 dígitos que chega no Mailpit): `admin@`, `pesquisa@`, `gestor.norte@`, `regional.n1@`, `escola.alfa@`, `gestor.sul@` + `teste.org`.
+Usuários de teste (o código chega ao Resend falso dos e2e): `admin@`, `pesquisa@`, `gestor.norte@`, `regional.n1@`, `escola.alfa@`, `gestor.sul@` + `teste.org`.
 
 ## Testes
 
@@ -63,42 +63,21 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    ```bash
    npx supabase migration repair --db-url "$DATABASE_URL" --status applied 20260929000001 20260929000002 20260929000003 20260929000004 20260929000005 20260929000006 20260929000007 20260929000008 20260929000009 20260930000010 20261005000011
    ```
-3. **Convite sem Edge Function** (migração 011 = `../database/005_convite_no_banco.sql`): rode o arquivo no SQL Editor. O convite cria o usuário e o perfil no banco (`convidar_usuario`) e a tela pede o envio do código de acesso, que sai pelo SMTP do Auth (Resend). Não há função para publicar nem variáveis no serviço `functions`.
-4. **Auth (login por código de 6 dígitos, e-mails pelo Resend):** no `.env` do Supabase:
-   ```
-   SITE_URL=https://deploy-epf.9bkmfg.easypanel.host
-   ADDITIONAL_REDIRECT_URLS=https://deploy-epf.9bkmfg.easypanel.host/painel
-   DISABLE_SIGNUP=true
-   SMTP_HOST=smtp.resend.com
-   SMTP_PORT=465
-   SMTP_USER=resend
-   SMTP_PASS=<chave do Resend>
-   SMTP_ADMIN_EMAIL=nao-responda@epf.motriz.org
-   SMTP_SENDER_NAME=EPF
-   ```
-   E no `environment:` do serviço `auth` no `docker-compose.yml` (o `.env` sozinho não chega ao contêiner), para todos os e-mails saírem em português e com a identidade do EPF:
-   ```yaml
-   GOTRUE_MAILER_OTP_LENGTH: 6
-   GOTRUE_MAILER_TEMPLATES_MAGIC_LINK: https://deploy-epf.9bkmfg.easypanel.host/emails/codigo-acesso.html
-   GOTRUE_MAILER_SUBJECTS_MAGIC_LINK: Seu código de acesso ao painel EPF
-   GOTRUE_MAILER_TEMPLATES_CONFIRMATION: https://deploy-epf.9bkmfg.easypanel.host/emails/codigo-acesso.html
-   GOTRUE_MAILER_SUBJECTS_CONFIRMATION: Seu código de acesso ao painel EPF
-   GOTRUE_MAILER_TEMPLATES_INVITE: https://deploy-epf.9bkmfg.easypanel.host/emails/convite.html
-   GOTRUE_MAILER_SUBJECTS_INVITE: Você foi convidado para o painel EPF
-   GOTRUE_MAILER_TEMPLATES_RECOVERY: https://deploy-epf.9bkmfg.easypanel.host/emails/recuperacao.html
-   GOTRUE_MAILER_SUBJECTS_RECOVERY: Recuperação de acesso ao painel EPF
-   GOTRUE_MAILER_TEMPLATES_EMAIL_CHANGE: https://deploy-epf.9bkmfg.easypanel.host/emails/troca-email.html
-   GOTRUE_MAILER_SUBJECTS_EMAIL_CHANGE: Confirme seu novo e-mail no painel EPF
-   GOTRUE_MAILER_TEMPLATES_REAUTHENTICATION: https://deploy-epf.9bkmfg.easypanel.host/emails/reautenticacao.html
-   GOTRUE_MAILER_SUBJECTS_REAUTHENTICATION: Código de confirmação do painel EPF
-   ```
-   Os modelos ficam em `public/emails/` e são gerados por `npx tsx scripts/gerar-emails.ts` (layout único com os tokens do design system; o teste `scripts/gerar-emails.test.ts` falha se os arquivos ficarem desatualizados). Confira no console do `auth`: `printenv | grep GOTRUE_MAILER_TEMPLATES` deve listar as seis URLs. Se o e-mail chegar em inglês ("Your Magic Link"), elas não estão no contêiner.
-   O modelo é `public/emails/codigo-acesso.html`, publicado pelo próprio frontend. O remetente precisa ser de um domínio verificado no Resend.
-5. **Frontend (Easypanel):** serviço *App* apontando para este repositório, build por **Dockerfile** (nginx com fallback de SPA, porta 80). Em *Environment*, defina `VITE_SUPABASE_URL` e a `VITE_SUPABASE_ANON_KEY` **nova** — viram build args e são embutidas no build; sem elas o build falha de propósito.
-6. **Primeiro admin:** convide pelo Studio e rode
+3. **Login e convite por código, e-mail direto pelo Resend** (migrações 011–013 = `../database/006_acesso_por_codigo.sql`): rode o arquivo no SQL Editor e preencha a configuração do fim dele:
    ```sql
-   insert into public.perfil (user_id, papel, nome) select id, 'admin', 'Motriz' from auth.users where email = '<e-mail>';
+   insert into public.config_privada (chave, valor) values
+     ('resend_api_key', 're_…'), ('email_remetente', 'EPF <nao-responda@epf.motriz.org>'),
+     ('site_url', 'https://deploy-epf.9bkmfg.easypanel.host')
+   on conflict (chave) do update set valor = excluded.valor;
    ```
+   O banco gera o código, envia o e-mail com o modelo do EPF pela API do Resend (`pg_net`) e emite a sessão do painel (JWT de 12 h assinado com o `JWT_SECRET` do Supabase, lido de `app.settings.jwt_secret`; se não existir, grave-o em `config_privada` como `jwt_secret`). O Auth do Supabase (GoTrue) não envia nada: não há SMTP, modelos `GOTRUE_MAILER_*` nem Edge Function para configurar. Os modelos são gerados por `npx tsx scripts/gerar-emails.ts`. Diagnóstico dos envios: consulta no fim do `006`.
+4. **Ao trocar o `JWT_SECRET`** do Supabase, as sessões abertas caem (todos entram de novo com código); nada mais a fazer.
+5. **Frontend (Easypanel):** serviço *App* apontando para este repositório, build por **Dockerfile** (nginx com fallback de SPA, porta 80). Em *Environment*, defina `VITE_SUPABASE_URL` e a `VITE_SUPABASE_ANON_KEY` **nova** — viram build args e são embutidas no build; sem elas o build falha de propósito.
+6. **Primeiro admin:** crie o usuário no Studio (*Authentication → Add user*, com "Auto Confirm User") e rode
+   ```sql
+   insert into public.perfil (user_id, papel, nome) select id, 'admin', 'Motriz' from auth.users where lower(email) = '<e-mail>';
+   ```
+   Os demais usuários são convidados pela tela Usuários.
 
 ## Operação por campanha
 

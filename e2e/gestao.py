@@ -1,4 +1,4 @@
-# Teste de ponta a ponta da área de gestão por perfil (Playwright + Mailpit local).
+# Teste de ponta a ponta da área de gestão por perfil (Playwright + Resend falso).
 # Requer: supabase start (portas 564xx) + npm run dev (porta 5173). Uso: python3 e2e/gestao.py /tmp
 import re, sys, time
 from playwright.sync_api import sync_playwright

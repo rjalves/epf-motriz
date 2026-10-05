@@ -82,3 +82,9 @@ insert into escola_campanha (campanha_id, co_inep, in_amostra, qt_mat_6, qt_mat_
   ('30000000-0000-0000-0000-000000000001', 91000002, true, 20, 20),
   ('30000000-0000-0000-0000-000000000001', 91000003, false, 10, 10),
   ('30000000-0000-0000-0000-000000000002', 92000001, true, 30, 30);
+
+-- Envio de e-mail local: o banco manda para o Resend falso dos testes e2e (e2e/util.py, porta 58025).
+insert into config_privada (chave, valor) values
+  ('resend_url', 'http://host.docker.internal:58025/emails'), ('resend_api_key', 're_teste'),
+  ('email_remetente', 'EPF <nao-responda@teste.org>'), ('site_url', 'http://localhost:5173'),
+  ('intervalo_codigo_segundos', '1');

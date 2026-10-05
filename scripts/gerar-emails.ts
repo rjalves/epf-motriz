@@ -1,17 +1,15 @@
-// Gera os modelos de e-mail do Supabase Auth (public/emails/*.html), em português e com a identidade do EPF.
-// O site publica os arquivos; o Auth os busca pela URL (GOTRUE_MAILER_TEMPLATES_*). Uso: npx tsx scripts/gerar-emails.ts
+// Gera os modelos de e-mail do EPF (em português, com a identidade do design system) como migração SQL:
+// a tabela modelo_email é lida por _enviar_email, que envia direto pela API do Resend.
+// Uso: npx tsx scripts/gerar-emails.ts   (reescreve supabase/migrations/20261005000013_modelos_email.sql)
 import { writeFileSync } from 'node:fs'
 
-export type Email = { tipo: string; arquivo: string; assunto: string; variaveis: string[] }
+export type Email = { tipo: string; assunto: string; variaveis: string[] }
+export const MIGRACAO = 'supabase/migrations/20261005000013_modelos_email.sql'
 
-// tipo = nome no Auth (GOTRUE_MAILER_TEMPLATES_<TIPO> / [auth.email.template.<tipo>])
+// tipo = chave em modelo_email; variáveis {{ .X }} trocadas por _montar_email (SiteURL vem de config_privada).
 export const EMAILS: Email[] = [
-  { tipo: 'magic_link', arquivo: 'codigo-acesso.html', assunto: 'Seu código de acesso ao painel EPF', variaveis: ['Token', 'SiteURL'] },
-  { tipo: 'confirmation', arquivo: 'codigo-acesso.html', assunto: 'Seu código de acesso ao painel EPF', variaveis: ['Token', 'SiteURL'] },
-  { tipo: 'invite', arquivo: 'convite.html', assunto: 'Você foi convidado para o painel EPF', variaveis: ['ConfirmationURL', 'SiteURL'] },
-  { tipo: 'recovery', arquivo: 'recuperacao.html', assunto: 'Recuperação de acesso ao painel EPF', variaveis: ['Token', 'Email'] },
-  { tipo: 'email_change', arquivo: 'troca-email.html', assunto: 'Confirme seu novo e-mail no painel EPF', variaveis: ['ConfirmationURL', 'Email', 'NewEmail'] },
-  { tipo: 'reauthentication', arquivo: 'reautenticacao.html', assunto: 'Código de confirmação do painel EPF', variaveis: ['Token'] },
+  { tipo: 'codigo', assunto: 'Seu código de acesso ao painel EPF', variaveis: ['Token', 'SiteURL'] },
+  { tipo: 'convite', assunto: 'Você foi convidado para o painel EPF', variaveis: ['Token', 'SiteURL', 'Nome', 'Perfil'] },
 ]
 
 // Tokens do design system (design-system/tokens.css), inline porque programas de e-mail ignoram CSS externo.
@@ -143,47 +141,39 @@ ${conteudo}
 `
 
 const CONTEUDO: Record<string, { previa: string; corpo: string }> = {
-  'codigo-acesso.html': {
+  codigo: {
     previa: 'Use o código {{ .Token }} para entrar no painel da pesquisa EPF. Ele vale por 1 hora.',
-    corpo: titulo('Seu código de acesso', 'Você tem acesso ao painel da pesquisa EPF. Para entrar, abra o painel, informe este e-mail e digite o código abaixo.')
+    corpo: titulo('Seu código de acesso', 'Para entrar no painel da pesquisa EPF, digite o código abaixo na tela de login.')
       + codigo('Vale por 1 hora e só pode ser usado uma vez. Se vencer, peça outro na tela de login.')
       + PAINEL
       + aviso('Não pediu este código?', 'Ignore este e-mail: ninguém entra no painel sem ele. Não compartilhe o código com outras pessoas, nem com a equipe da pesquisa.'),
   },
-  'convite.html': {
-    previa: 'Você recebeu acesso ao painel da pesquisa EPF.',
-    corpo: titulo('Você foi convidado', 'Você recebeu acesso ao painel da pesquisa EPF — Engajamento, Pertencimento e Futuros, para acompanhar a participação dos estudantes.')
-      + botao('Aceitar convite', '{{ .ConfirmationURL }}', true)
-      + nota('Depois, entre sempre por <a href="{{ .SiteURL }}/painel" style="color:#0E2640;">{{ .SiteURL }}/painel</a> com este e-mail. A cada acesso enviamos um código de 6 dígitos; não há senha.')
-      + aviso('Não esperava este convite?', 'Ignore este e-mail. Nenhum acesso é liberado sem que você aceite.'),
-  },
-  'recuperacao.html': {
-    previa: 'Use o código {{ .Token }} para recuperar seu acesso ao painel EPF.',
-    corpo: titulo('Recuperar seu acesso', 'Recebemos um pedido para recuperar o acesso de {{ .Email }} ao painel da pesquisa EPF. Digite o código abaixo na tela de login.')
-      + codigo('Vale por 1 hora e só pode ser usado uma vez.')
-      + PAINEL
-      + aviso('Não pediu?', 'Ignore este e-mail. Seu acesso continua como estava.'),
-  },
-  'troca-email.html': {
-    previa: 'Confirme o novo e-mail de acesso ao painel EPF.',
-    corpo: titulo('Confirme seu novo e-mail', 'Recebemos um pedido para trocar o e-mail de acesso ao painel EPF de {{ .Email }} para {{ .NewEmail }}.')
-      + botao('Confirmar novo e-mail', '{{ .ConfirmationURL }}', true)
-      + aviso('Não pediu essa troca?', 'Ignore este e-mail e avise o ponto focal da sua rede. O e-mail de acesso só muda depois da confirmação.'),
-  },
-  'reautenticacao.html': {
-    previa: 'Use o código {{ .Token }} para confirmar a operação no painel EPF.',
-    corpo: titulo('Confirme que é você', 'Para concluir a operação no painel da pesquisa EPF, digite o código abaixo.')
-      + codigo('Vale por poucos minutos e só pode ser usado uma vez.')
-      + aviso('Não reconhece este pedido?', 'Ignore este e-mail. Nada muda sem o código.'),
+  convite: {
+    previa: 'Você recebeu acesso ao painel da pesquisa EPF. Código de primeiro acesso: {{ .Token }}.',
+    corpo: titulo('Você foi convidado', 'Olá, {{ .Nome }}. Você recebeu acesso ao painel da pesquisa EPF — Engajamento, Pertencimento e Futuros, com o perfil <strong style="color:#0E2640;">{{ .Perfil }}</strong>.')
+      + nota('Para o primeiro acesso, abra o painel, informe este e-mail e digite o código:')
+      + '\n          <tr><td style="padding:16px 0 0;"></td></tr>'
+      + codigo('Vale por 1 hora. Depois, entre sempre pelo painel com este e-mail: a cada acesso enviamos um código novo, sem senha.')
+      + botao('Abrir o painel', '{{ .SiteURL }}/painel', true)
+      + aviso('Não esperava este convite?', 'Ignore este e-mail ou avise o ponto focal da sua rede.'),
   },
 }
 
-export function gerarEmails(): Record<string, string> {
-  return Object.fromEntries(Object.entries(CONTEUDO).map(([arquivo, { previa, corpo }]) =>
-    [arquivo, layout(EMAILS.find((e) => e.arquivo === arquivo)!.assunto, previa, corpo)]))
+const sql = (t: string) => `$html$${t}$html$`
+
+export function gerarMigracao(): string {
+  const linhas = EMAILS.map((e) => {
+    const { previa, corpo } = CONTEUDO[e.tipo]
+    return `  (${sql(e.tipo)}, ${sql(e.assunto)}, ${sql(layout(e.assunto, previa, corpo))})`
+  })
+  return `-- Gerado por scripts/gerar-emails.ts. Não edite à mão: altere o script e rode npx tsx scripts/gerar-emails.ts.
+insert into public.modelo_email (tipo, assunto, html) values
+${linhas.join(',\n')}
+on conflict (tipo) do update set assunto = excluded.assunto, html = excluded.html;
+`
 }
 
 if (process.argv[1]?.endsWith('gerar-emails.ts')) {
-  for (const [arquivo, html] of Object.entries(gerarEmails())) writeFileSync(`public/emails/${arquivo}`, html)
-  console.log(`${Object.keys(CONTEUDO).length} modelos gravados em public/emails/`)
+  writeFileSync(MIGRACAO, gerarMigracao())
+  console.log(`${EMAILS.length} modelos gravados em ${MIGRACAO}`)
 }

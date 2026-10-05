@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react'
-import type { Session } from '@supabase/supabase-js'
 import { BrowserRouter, Link, Navigate, NavLink, Route, Routes } from 'react-router-dom'
 import Responder from './coleta/Responder'
 import { pode, ROTULO_PAPEL } from './lib/capacidades'
-import { sb } from './lib/supabase'
+import { sair, useSessao } from './lib/sessao'
 import { usePerfil } from './gestao/usePerfil'
 import { Simbolo } from './gestao/ui'
 import Login from './gestao/pages/Login'
@@ -18,16 +16,9 @@ const Rodape = () => <footer className="epf-pagina rodape-painel epf-legenda">De
 const PAPEL_CLASSE = { admin: 'admin', gestor_rede: 'gestor', regional: 'regional', escola: 'escola', pesquisador: 'pesquisador' } as const
 
 function Gestao() {
-  const [sessao, setSessao] = useState<Session | null>(null)
-  const [pronto, setPronto] = useState(false)
-  useEffect(() => {
-    sb.auth.getSession().then(({ data }) => { setSessao(data.session); setPronto(true) })
-    const { data } = sb.auth.onAuthStateChange((_e, s) => setSessao(s))
-    return () => data.subscription.unsubscribe()
-  }, [])
+  const sessao = useSessao()
   const { perfil, carregando } = usePerfil(sessao)
 
-  if (!pronto) return null
   if (!sessao) return <Login />
   if (carregando) return <main className="epf-pagina" style={{ paddingTop: 40 }}><span className="epf-esqueleto" style={{ display: 'block', height: 120 }} /></main>
   if (!perfil) {
@@ -36,7 +27,7 @@ function Gestao() {
         <div className="epf-estado">
           <b>Seu acesso ainda não foi liberado ou foi desativado.</b>
           <span className="epf-texto-2">Fale com o ponto focal da sua rede.</span>
-          <button className="epf-btn epf-btn--secundario epf-btn--p" onClick={() => sb.auth.signOut()}>Sair</button>
+          <button className="epf-btn epf-btn--secundario epf-btn--p" onClick={sair}>Sair</button>
         </div>
       </main>
       <Rodape />
@@ -58,8 +49,8 @@ function Gestao() {
         </div>
         <div className="epf-linha">
           <span className={`epf-papel epf-papel--${PAPEL_CLASSE[p]}`}>{ROTULO_PAPEL[p]}</span>
-          <span className="epf-legenda topo-email">{sessao.user.email}</span>
-          <button className="epf-btn epf-btn--fantasma epf-btn--p" onClick={() => sb.auth.signOut()}>Sair</button>
+          <span className="epf-legenda topo-email">{sessao.email}</span>
+          <button className="epf-btn epf-btn--fantasma epf-btn--p" onClick={sair}>Sair</button>
         </div>
       </header>
       <main className="epf-pagina conteudo-painel">

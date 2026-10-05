@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { salvarSessao } from '../../lib/sessao'
 import { sb } from '../../lib/supabase'
 import { Simbolo } from '../ui'
 
@@ -12,13 +13,12 @@ export default function Login() {
   async function pedirCodigo(e?: FormEvent) {
     e?.preventDefault()
     setEnviando(true)
-    // shouldCreateUser: false — só entra quem foi convidado. O e-mail traz o código ({{ .Token }}).
-    const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false } })
+    // O banco confere o acesso, gera o código e envia o e-mail pela API do Resend.
+    const { error } = await sb.rpc('pedir_codigo', { p_email: email })
     setEnviando(false)
-    // otp_disabled: o Auth não achou o e-mail (shouldCreateUser: false). Outros erros são falha de envio.
-    if (error) return setEstado({ tipo: 'erro', texto: error.status === 429
+    if (error) return setEstado({ tipo: 'erro', texto: error.message === 'aguarde'
       ? 'Aguarde um minuto antes de pedir outro código.'
-      : error.code === 'otp_disabled'
+      : error.message === 'sem_acesso'
         ? 'Não encontramos um acesso para este e-mail. Fale com o ponto focal da sua rede.'
         : `Não foi possível enviar o código agora. Tente de novo em instantes. (${error.message})` })
     setEtapa('codigo'); setCodigo('')
@@ -28,9 +28,12 @@ export default function Login() {
   async function confirmar(e: FormEvent) {
     e.preventDefault()
     setEnviando(true)
-    const { error } = await sb.auth.verifyOtp({ email, token: codigo, type: 'email' })
+    const { data, error } = await sb.rpc('entrar_com_codigo', { p_email: email, p_codigo: codigo })
     setEnviando(false)
-    if (error) setEstado({ tipo: 'erro', texto: 'Código incorreto ou vencido. Confira o e-mail ou peça um novo código.' })
+    if (error || data?.erro) return setEstado({ tipo: 'erro', texto: data?.erro === 'sem_acesso'
+      ? 'Seu acesso foi desativado. Fale com o ponto focal da sua rede.'
+      : error ? `Não foi possível entrar agora. (${error.message})` : 'Código incorreto ou vencido. Confira o e-mail ou peça um novo código.' })
+    salvarSessao(data)
   }
 
   return (

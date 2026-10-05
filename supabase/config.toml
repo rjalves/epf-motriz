@@ -242,31 +242,6 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
-# Login por código de 6 dígitos (o mesmo arquivo é servido pelo frontend para o GoTrue do servidor).
-[auth.email.template.magic_link]
-subject = "Seu código de acesso ao painel EPF"
-content_path = "./public/emails/codigo-acesso.html"
-
-[auth.email.template.confirmation]
-subject = "Seu código de acesso ao painel EPF"
-content_path = "./public/emails/codigo-acesso.html"
-
-[auth.email.template.invite]
-subject = "Você foi convidado para o painel EPF"
-content_path = "./public/emails/convite.html"
-
-[auth.email.template.recovery]
-subject = "Recuperação de acesso ao painel EPF"
-content_path = "./public/emails/recuperacao.html"
-
-[auth.email.template.email_change]
-subject = "Confirme seu novo e-mail no painel EPF"
-content_path = "./public/emails/troca-email.html"
-
-[auth.email.template.reauthentication]
-subject = "Código de confirmação do painel EPF"
-content_path = "./public/emails/reautenticacao.html"
-
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
