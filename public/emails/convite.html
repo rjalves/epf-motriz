@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>Seu código de acesso ao painel EPF</title>
+  <title>Você foi convidado para o painel EPF</title>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
 </head>
 <body style="margin:0;padding:0;background-color:#FBF6EE;">
   <!-- Pré-visualização na caixa de entrada -->
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Use o código {{ .Token }} para entrar no painel da pesquisa EPF. Ele vale por 1 hora.</div>
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Você recebeu acesso ao painel da pesquisa EPF.</div>
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FBF6EE;">
     <tr>
@@ -48,41 +48,30 @@
 
           <tr>
             <td style="padding:28px 32px 8px;font-family:'Lexend',Arial,Helvetica,sans-serif;color:#0E2640;">
-              <h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:700;color:#0E2640;">Seu código de acesso</h1>
-              <p style="margin:0 0 24px;font-size:16px;line-height:1.55;color:#4A5A6E;">Você tem acesso ao painel da pesquisa EPF. Para entrar, abra o painel, informe este e-mail e digite o código abaixo.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:0 32px;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0E2640;border-radius:12px;">
-                <tr>
-                  <td align="center" style="padding:22px 12px;font-family:'IBM Plex Mono','Courier New',Courier,monospace;font-size:36px;line-height:1;font-weight:600;letter-spacing:10px;color:#FFFFFF;">{{ .Token }}</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:12px 32px 0;font-family:'Lexend',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#4A5A6E;text-align:center;">
-              Vale por 1 hora e só pode ser usado uma vez. Se vencer, peça outro na tela de login.
+              <h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:700;color:#0E2640;">Você foi convidado</h1>
+              <p style="margin:0 0 24px;font-size:16px;line-height:1.55;color:#4A5A6E;">Você recebeu acesso ao painel da pesquisa EPF — Engajamento, Pertencimento e Futuros, para acompanhar a participação dos estudantes.</p>
             </td>
           </tr>
           <tr>
             <td align="center" style="padding:24px 32px 0;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td style="border-radius:12px;border:2px solid #0E2640;">
-                    <a href="{{ .SiteURL }}/painel" style="display:inline-block;padding:12px 24px;font-family:'Lexend',Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#0E2640;text-decoration:none;">Abrir o painel</a>
+                  <td style="border-radius:12px;border:2px solid #0E2640;background-color:#0E2640;">
+                    <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 24px;font-family:'Lexend',Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#FFFFFF;text-decoration:none;">Aceitar convite</a>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
+            <td style="padding:16px 32px 0;font-family:'Lexend',Arial,Helvetica,sans-serif;font-size:13px;line-height:1.55;color:#4A5A6E;text-align:center;">Depois, entre sempre por <a href="{{ .SiteURL }}/painel" style="color:#0E2640;">{{ .SiteURL }}/painel</a> com este e-mail. A cada acesso enviamos um código de 6 dígitos; não há senha.</td>
+          </tr>
+          <tr>
             <td style="padding:28px 32px 32px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FBF6EE;border-radius:12px;">
                 <tr>
                   <td style="padding:16px 18px;font-family:'Lexend',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.55;color:#0E2640;">
-                    <strong>Não pediu este código?</strong> Ignore este e-mail: ninguém entra no painel sem ele. Não compartilhe o código com outras pessoas, nem com a equipe da pesquisa.
+                    <strong>Não esperava este convite?</strong> Ignore este e-mail. Nenhum acesso é liberado sem que você aceite.
                   </td>
                 </tr>
               </table>

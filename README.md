@@ -76,15 +76,23 @@ O servidor recebeu a estrutura por `../database/001_estrutura_inicial.sql` e as 
    SMTP_ADMIN_EMAIL=nao-responda@epf.motriz.org
    SMTP_SENDER_NAME=EPF
    ```
-   E no `environment:` do serviço `auth` no `docker-compose.yml` (o `.env` sozinho não chega ao contêiner), para o e-mail trazer o código, em português e com a identidade do EPF:
+   E no `environment:` do serviço `auth` no `docker-compose.yml` (o `.env` sozinho não chega ao contêiner), para todos os e-mails saírem em português e com a identidade do EPF:
    ```yaml
+   GOTRUE_MAILER_OTP_LENGTH: 6
    GOTRUE_MAILER_TEMPLATES_MAGIC_LINK: https://deploy-epf.9bkmfg.easypanel.host/emails/codigo-acesso.html
    GOTRUE_MAILER_SUBJECTS_MAGIC_LINK: Seu código de acesso ao painel EPF
    GOTRUE_MAILER_TEMPLATES_CONFIRMATION: https://deploy-epf.9bkmfg.easypanel.host/emails/codigo-acesso.html
    GOTRUE_MAILER_SUBJECTS_CONFIRMATION: Seu código de acesso ao painel EPF
-   GOTRUE_MAILER_OTP_LENGTH: 6
+   GOTRUE_MAILER_TEMPLATES_INVITE: https://deploy-epf.9bkmfg.easypanel.host/emails/convite.html
+   GOTRUE_MAILER_SUBJECTS_INVITE: Você foi convidado para o painel EPF
+   GOTRUE_MAILER_TEMPLATES_RECOVERY: https://deploy-epf.9bkmfg.easypanel.host/emails/recuperacao.html
+   GOTRUE_MAILER_SUBJECTS_RECOVERY: Recuperação de acesso ao painel EPF
+   GOTRUE_MAILER_TEMPLATES_EMAIL_CHANGE: https://deploy-epf.9bkmfg.easypanel.host/emails/troca-email.html
+   GOTRUE_MAILER_SUBJECTS_EMAIL_CHANGE: Confirme seu novo e-mail no painel EPF
+   GOTRUE_MAILER_TEMPLATES_REAUTHENTICATION: https://deploy-epf.9bkmfg.easypanel.host/emails/reautenticacao.html
+   GOTRUE_MAILER_SUBJECTS_REAUTHENTICATION: Código de confirmação do painel EPF
    ```
-   Confira no console do `auth`: `printenv GOTRUE_MAILER_TEMPLATES_MAGIC_LINK` deve imprimir a URL. Se o e-mail chegar em inglês, ela não está no contêiner.
+   Os modelos ficam em `public/emails/` e são gerados por `npx tsx scripts/gerar-emails.ts` (layout único com os tokens do design system; o teste `scripts/gerar-emails.test.ts` falha se os arquivos ficarem desatualizados). Confira no console do `auth`: `printenv | grep GOTRUE_MAILER_TEMPLATES` deve listar as seis URLs. Se o e-mail chegar em inglês ("Your Magic Link"), elas não estão no contêiner.
    O modelo é `public/emails/codigo-acesso.html`, publicado pelo próprio frontend. O remetente precisa ser de um domínio verificado no Resend.
 5. **Frontend (Easypanel):** serviço *App* apontando para este repositório, build por **Dockerfile** (nginx com fallback de SPA, porta 80). Em *Environment*, defina `VITE_SUPABASE_URL` e a `VITE_SUPABASE_ANON_KEY` **nova** — viram build args e são embutidas no build; sem elas o build falha de propósito.
 6. **Primeiro admin:** convide pelo Studio e rode

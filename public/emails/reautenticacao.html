@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>Seu código de acesso ao painel EPF</title>
+  <title>Código de confirmação do painel EPF</title>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
 </head>
 <body style="margin:0;padding:0;background-color:#FBF6EE;">
   <!-- Pré-visualização na caixa de entrada -->
-  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Use o código {{ .Token }} para entrar no painel da pesquisa EPF. Ele vale por 1 hora.</div>
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">Use o código {{ .Token }} para confirmar a operação no painel EPF.</div>
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FBF6EE;">
     <tr>
@@ -48,8 +48,8 @@
 
           <tr>
             <td style="padding:28px 32px 8px;font-family:'Lexend',Arial,Helvetica,sans-serif;color:#0E2640;">
-              <h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:700;color:#0E2640;">Seu código de acesso</h1>
-              <p style="margin:0 0 24px;font-size:16px;line-height:1.55;color:#4A5A6E;">Você tem acesso ao painel da pesquisa EPF. Para entrar, abra o painel, informe este e-mail e digite o código abaixo.</p>
+              <h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:700;color:#0E2640;">Confirme que é você</h1>
+              <p style="margin:0 0 24px;font-size:16px;line-height:1.55;color:#4A5A6E;">Para concluir a operação no painel da pesquisa EPF, digite o código abaixo.</p>
             </td>
           </tr>
           <tr>
@@ -63,18 +63,7 @@
           </tr>
           <tr>
             <td style="padding:12px 32px 0;font-family:'Lexend',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.5;color:#4A5A6E;text-align:center;">
-              Vale por 1 hora e só pode ser usado uma vez. Se vencer, peça outro na tela de login.
-            </td>
-          </tr>
-          <tr>
-            <td align="center" style="padding:24px 32px 0;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="border-radius:12px;border:2px solid #0E2640;">
-                    <a href="{{ .SiteURL }}/painel" style="display:inline-block;padding:12px 24px;font-family:'Lexend',Arial,Helvetica,sans-serif;font-size:15px;font-weight:600;color:#0E2640;text-decoration:none;">Abrir o painel</a>
-                  </td>
-                </tr>
-              </table>
+              Vale por poucos minutos e só pode ser usado uma vez.
             </td>
           </tr>
           <tr>
@@ -82,7 +71,7 @@
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#FBF6EE;border-radius:12px;">
                 <tr>
                   <td style="padding:16px 18px;font-family:'Lexend',Arial,Helvetica,sans-serif;font-size:14px;line-height:1.55;color:#0E2640;">
-                    <strong>Não pediu este código?</strong> Ignore este e-mail: ninguém entra no painel sem ele. Não compartilhe o código com outras pessoas, nem com a equipe da pesquisa.
+                    <strong>Não reconhece este pedido?</strong> Ignore este e-mail. Nada muda sem o código.
                   </td>
                 </tr>
               </table>
