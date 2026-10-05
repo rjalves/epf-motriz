@@ -42,7 +42,10 @@ export default function Usuarios({ perfil }: { perfil: Perfil }) {
       co_inep: novo.papel === 'escola' ? Number(novo.co_inep) : null } })
     setEnviando(false)
     if (error) {
-      const motivo = await (error as { context?: Response }).context?.json().then((j) => j.erro as string).catch(() => null)
+      // Erros da função vêm em "erro"; os do runtime (função não publicada, falha ao iniciar) vêm em "msg".
+      const corpo = await (error as { context?: Response }).context?.json().catch(() => null)
+      const motivo: string | null = corpo?.erro ?? (/entrypoint|InvalidWorkerCreation/.test(corpo?.msg ?? '')
+        ? 'a função de convite não está publicada no servidor (convidar-usuario)' : corpo?.msg ?? null)
       const TEXTO: Record<string, string> = {
         email_ja_cadastrado: 'este e-mail já tem acesso ou um convite pendente',
         sem_permissao: 'seu perfil não pode convidar para este perfil ou rede',
