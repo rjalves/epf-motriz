@@ -374,4 +374,4 @@ O estudante não precisa de login, só do link ou do QR code que a escola divulg
 
 ---
 
-*Desenvolvido com Tecnologia Motriz.*
+*Desenvolvido por Tecnologia Motriz.*

@@ -11,7 +11,7 @@ import PainelEscola from './gestao/pages/PainelEscola'
 import Configuracao from './gestao/pages/Configuracao'
 import Usuarios from './gestao/pages/Usuarios'
 
-const Rodape = () => <footer className="epf-pagina rodape-painel epf-legenda">Desenvolvido com Tecnologia Motriz</footer>
+const Rodape = () => <footer className="epf-pagina rodape-painel epf-legenda">Desenvolvido por Tecnologia Motriz</footer>
 
 const PAPEL_CLASSE = { admin: 'admin', gestor_rede: 'gestor', regional: 'regional', escola: 'escola', pesquisador: 'pesquisador' } as const
 

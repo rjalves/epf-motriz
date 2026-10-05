@@ -48,7 +48,7 @@ export default function Login() {
           </div>
           <div className="epf-pilha" style={{ gap: 4, color: 'var(--epf-texto-inv-3)' }}>
             <p className="epf-legenda" style={{ margin: 0, color: 'inherit' }}>Realização Itaú Social · Articulação Motriz · Apoio técnico Germina</p>
-            <p className="epf-legenda" style={{ margin: 0, color: 'inherit' }}>Desenvolvido com Tecnologia Motriz</p>
+            <p className="epf-legenda" style={{ margin: 0, color: 'inherit' }}>Desenvolvido por Tecnologia Motriz</p>
           </div>
         </div>
       </aside>

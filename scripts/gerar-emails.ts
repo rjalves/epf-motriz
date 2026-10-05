@@ -1,10 +1,10 @@
 // Gera os modelos de e-mail do EPF (em português, com a identidade do design system) como migração SQL:
 // a tabela modelo_email é lida por _enviar_email, que envia direto pela API do Resend.
-// Uso: npx tsx scripts/gerar-emails.ts   (reescreve supabase/migrations/20261005000013_modelos_email.sql)
+// Uso: npx tsx scripts/gerar-emails.ts   (reescreve a migração indicada em MIGRACAO; ao mudar um modelo já implantado, aponte para uma migração nova)
 import { writeFileSync } from 'node:fs'
 
 export type Email = { tipo: string; assunto: string; variaveis: string[] }
-export const MIGRACAO = 'supabase/migrations/20261005000013_modelos_email.sql'
+export const MIGRACAO = 'supabase/migrations/20261006000016_modelos_email.sql'
 
 // tipo = chave em modelo_email; variáveis {{ .X }} trocadas por _montar_email (SiteURL vem de config_privada).
 export const EMAILS: Email[] = [
@@ -128,7 +128,7 @@ ${conteudo}
           <tr>
             <td style="padding:20px 32px 24px;border-top:1px solid ${C.linha};${FONTE}font-size:12px;line-height:1.6;color:${C.texto2};">
               Realização Itaú Social · Articulação Motriz · Apoio técnico Germina<br>
-              Desenvolvido com Tecnologia Motriz<br>
+              Desenvolvido por Tecnologia Motriz<br>
               Este é um e-mail automático. Não é preciso responder.
             </td>
           </tr>

@@ -16,7 +16,7 @@ describe('modelos de e-mail do EPF', () => {
   it.each(EMAILS.map((e) => [e.tipo, e]))('%s: em português, com as variáveis preenchidas pelo banco', (_, e) => {
     const html = sql.split('$html$').find((t) => t.startsWith('<!doctype') && t.includes(`<title>${e.assunto}</title>`))!
     expect(html).toContain('lang="pt-BR"')
-    expect(html).toContain('Desenvolvido com Tecnologia Motriz')
+    expect(html).toContain('Desenvolvido por Tecnologia Motriz')
     expect(html).toContain('/emails/epf-simbolo.png')
     for (const v of e.variaveis) expect(html).toContain(`{{ .${v} }}`)
     expect(html).not.toMatch(/Magic Link|Follow this link|Log In|ConfirmationURL/)
