@@ -37,7 +37,7 @@ export default function Responder() {
   const irPara = (t: Tela) => { setAviso(null); setTela(t); window.scrollTo(0, 0) }
 
   // Erros que encerram a sessão guardada neste aparelho: não adianta tentar retomá-la.
-  const encerraSessao = (texto: string) => /expirou|já foi enviada|já respondeu/.test(texto)
+  const encerraSessao = (texto: string) => /expirou|já foi enviada/.test(texto)
 
   async function entrar(s: Sessao) {
     setSessao(s)
@@ -116,7 +116,7 @@ export default function Responder() {
                 Não sou eu: nova resposta
               </button>
             )}
-            {!guardada && <p style={{ fontSize: 14, textAlign: 'center' }}>Já começou antes? Toque em Começar e informe os mesmos dados: você continua de onde parou.</p>}
+            {!guardada && <p style={{ fontSize: 14, textAlign: 'center' }}>Se parar no meio, abra este link de novo no mesmo celular ou computador: você continua de onde parou.</p>}
           </>) : (
             <div className="epf-aviso epf-aviso--info" role="status">
               {dados.campanha.situacao === 'nao_iniciada' ? 'A pesquisa ainda não começou.' : 'A pesquisa está encerrada. Obrigado!'}
@@ -150,7 +150,7 @@ export default function Responder() {
           <h1 className="epf-h3">Você aceita participar?</h1>
           <ul className="garantias">
             <li><Icone d="M5 12l5 5L20 7" /><span><b>É voluntário.</b> Você pode parar quando quiser, sem problema nenhum.</span></li>
-            <li><Icone d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z" /><span><b>É confidencial.</b> Seu nome fica guardado separado das suas respostas. Ninguém da escola saberá o que você respondeu.</span></li>
+            <li><Icone d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z" /><span><b>É confidencial.</b> Você não informa seu nome. Ninguém da escola saberá o que você respondeu.</span></li>
             <li><Icone d="M12 21V3M5 10l7-7 7 7" /><span><b>Sua voz muda a escola.</b> A Secretaria vai usar as respostas para planejar melhorias junto com vocês.</span></li>
           </ul>
           <div className="estudante__acoes">

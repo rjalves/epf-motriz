@@ -152,7 +152,7 @@ Veja as seções [4.2](#42-acompanhar-a-coleta-da-rede) e [4.3](#43-enviar-o-rel
 
 ### 3.8 Consultar dados pessoais dos estudantes
 
-Nomes, e-mails e telefones ficam separados das respostas. Só o admin consulta esses dados, pela equipe técnica, e cada consulta fica registrada em auditoria. Use apenas quando houver necessidade real, como um pedido de exclusão feito pelo titular ou pelo responsável.
+Data de nascimento, e-mails e telefones ficam separados das respostas (o estudante não informa o nome). Só o admin consulta esses dados, pela equipe técnica, e cada consulta fica registrada em auditoria. Use apenas quando houver necessidade real, como um pedido de exclusão feito pelo titular ou pelo responsável.
 
 ---
 
@@ -243,7 +243,7 @@ Se aparecer "Nenhuma coleta aberta para a sua escola agora", a coleta ainda não
 3. Oriente cada estudante a ir até a tela **"Obrigado por participar!"**. Só a partir dela a resposta conta.
 4. Em um dispositivo compartilhado, o próximo estudante toca em **Nova resposta neste dispositivo** na tela final, antes de começar.
 5. **Menores de 12 anos** precisam da autorização do responsável. Recolha os termos assinados antes da aplicação e guarde-os na escola.
-6. Se a internet cair, o estudante abre o link de novo e informa os mesmos dados. Ele continua de onde parou.
+6. Se a internet cair, o estudante abre o link de novo **no mesmo aparelho** e toca em **Continuar de onde parei**. Em outro aparelho, a resposta recomeça do zero.
 
 Você vê apenas quantos estudantes responderam. Nomes e respostas são confidenciais, inclusive para a escola.
 
@@ -283,11 +283,10 @@ O estudante não precisa de login, só do link ou do QR code que a escola divulg
 3. **Antes de começar**: leia as regras.
    - Não é prova, não há respostas certas ou erradas.
    - É voluntário: você pode parar quando quiser.
-   - É confidencial: seu nome fica separado das suas respostas.
+   - É confidencial: o estudante não informa o nome.
 
    Toque em **Sim, aceito participar** ou em **Não quero participar**.
 4. **Seus dados**: preencha
-   - **Nome completo**;
    - **Escola** (escolha na lista);
    - **Em que ano você estuda?**;
    - **Data de nascimento**;
@@ -304,14 +303,13 @@ O estudante não precisa de login, só do link ou do QR code que a escola divulg
 ### 8.2 Parei no meio. E agora?
 
 - **No mesmo dispositivo**: abra o link de novo e toque em **Continuar de onde parei**.
-- **Em outro dispositivo, ou se a sessão expirou**: toque em **Começar** e informe os **mesmos dados** (nome, escola, ano e data de nascimento). Aparece "Que bom que você voltou!" e o questionário continua de onde parou.
+- **Em outro dispositivo, ou se a sessão expirou**: não é possível continuar a resposta anterior, porque o estudante não é identificado. Toque em **Começar** e responda de novo. Por isso, oriente a turma a terminar no mesmo celular ou computador em que começou.
 - **Dispositivo de outro colega**: se aparecer **Continuar de onde parei** e não for você, toque em **Não sou eu: nova resposta**.
 
 ### 8.3 Mensagens que o estudante pode ver
 
 | Mensagem | O que significa |
 |---|---|
-| "Você já respondeu esta pesquisa. Obrigado!" | Já existe uma resposta enviada com esses dados. Cada estudante responde uma vez. |
 | "A pesquisa ainda não começou." | A janela de coleta ainda não abriu. |
 | "A pesquisa está encerrada. Obrigado!" | A janela de coleta terminou. |
 | "Esta pesquisa não está aberta agora." | A secretaria ou a Motriz fechou a coleta. |
@@ -344,7 +342,7 @@ O estudante não precisa de login, só do link ou do QR code que a escola divulg
 
 ## 10. Privacidade
 
-- As respostas são **pseudonimizadas**: nome, e-mail e telefone ficam guardados separados das respostas. As telas do painel mostram só contagens, e a exportação usa um código no lugar do nome.
+- As respostas são **pseudonimizadas**: o estudante não informa o nome; data de nascimento, e-mail e telefone (opcionais) ficam guardados separados das respostas. As telas do painel mostram só contagens, e a exportação usa um código de sessão.
 - Escolas, regionais e secretarias **nunca** veem nomes nem respostas individuais.
 - Apenas o admin Motriz pode consultar os dados pessoais, e cada consulta é registrada.
 - Convites, desativações de acesso e exportações também ficam registrados em auditoria.

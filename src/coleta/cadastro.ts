@@ -1,5 +1,5 @@
 export type Cadastro = {
-  nome: string; co_inep: number | null; serie: number | null; nascimento: string
+  co_inep: number | null; serie: number | null; nascimento: string
   email: string; telefone: string; autorizacao: boolean
 }
 
@@ -18,7 +18,6 @@ export const precisaAutorizacao = (nascimentoISO: string, hoje: Date) =>
 // Mesmas regras do servidor (iniciar_sessao); aqui só para avisar antes do envio.
 export function validarCadastro(c: Cadastro, hoje: Date): Partial<Record<keyof Cadastro, string>> {
   const e: Partial<Record<keyof Cadastro, string>> = {}
-  if (c.nome.trim().length < 3) e.nome = 'Escreva seu nome.'
   if (c.co_inep === null) e.co_inep = 'Escolha a sua escola.'
   if (c.serie === null) e.serie = 'Escolha o seu ano.'
   if (!DATA.test(c.nascimento)) e.nascimento = 'Informe a sua data de nascimento.'

@@ -3,7 +3,7 @@ create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 select plan(10);
 
-select iniciar_sessao('teste-norte', 91000001, 9::smallint, 'Carla Dias', (current_date - interval '14 years')::date);
+select iniciar_sessao('teste-norte', 91000001, 9::smallint, (current_date - interval '14 years')::date);
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-00000000000e', true),

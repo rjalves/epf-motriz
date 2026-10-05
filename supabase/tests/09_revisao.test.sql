@@ -5,19 +5,18 @@ set local search_path = public, extensions;
 select plan(14);
 
 -- Sessão com token conhecido
-select iniciar_sessao('teste-norte', 91000001, 9::smallint, 'Bruno Lima', (current_date - interval '14 years')::date);
-update sessao set token_hash = digest(decode(repeat('cd', 32), 'hex'), 'sha256')
-where id = (select sessao_id from participante where nome_norm = 'BRUNO LIMA');
+create temp table bruno as select (iniciar_sessao('teste-norte', 91000001, 9::smallint, (current_date - interval '14 years')::date) ->> 'sessao_id')::uuid as id;
+update sessao set token_hash = digest(decode(repeat('cd', 32), 'hex'), 'sha256') where id = (select id from bruno);
 
-select ok((select assentiu_em is not null from sessao where id = (select sessao_id from participante where nome_norm = 'BRUNO LIMA')), 'sessão registra o momento do assentimento');
+select ok((select assentiu_em is not null from sessao where id = (select id from bruno)), 'sessão registra o momento do assentimento');
 
 update campanha set aberta = false where slug = 'teste-norte';
-select throws_ok($$select salvar_bloco((select sessao_id from participante where nome_norm = 'BRUNO LIMA'), repeat('cd', 32), 'A', '{"A2":"Preta","A9":"Não"}')$$,
+select throws_ok($$select salvar_bloco((select id from bruno), repeat('cd', 32), 'A', '{"A2":"Preta","A9":"Não"}')$$,
   'P0001', 'campanha_fechada', 'coleta fechada barra o salvamento de quem já começou');
-select throws_ok($$select concluir((select sessao_id from participante where nome_norm = 'BRUNO LIMA'), repeat('cd', 32))$$,
+select throws_ok($$select concluir((select id from bruno), repeat('cd', 32))$$,
   'P0001', 'campanha_fechada', 'coleta fechada barra a conclusão');
 update campanha set aberta = true, janela_fim = current_date - 1, janela_inicio = current_date - 10 where slug = 'teste-norte';
-select throws_ok($$select salvar_bloco((select sessao_id from participante where nome_norm = 'BRUNO LIMA'), repeat('cd', 32), 'A', '{"A2":"Preta","A9":"Não"}')$$,
+select throws_ok($$select salvar_bloco((select id from bruno), repeat('cd', 32), 'A', '{"A2":"Preta","A9":"Não"}')$$,
   'P0001', 'campanha_fechada', 'janela encerrada barra o salvamento');
 update campanha set janela_inicio = current_date - 1, janela_fim = current_date + 30 where slug = 'teste-norte';
 

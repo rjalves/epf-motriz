@@ -47,7 +47,7 @@ export default function PainelEscola({ coInep }: { coInep: number }) {
           <li>Um dispositivo com internet por estudante.</li>
           <li>Cada um vai até a tela "Obrigado por participar!".</li>
           <li>Menores de 12 anos precisam da autorização do responsável; guarde os termos assinados.</li>
-          <li>Se a internet cair, é só abrir o link de novo: a resposta continua de onde parou.</li>
+          <li>Se a internet cair, é só abrir o link de novo no mesmo aparelho: a resposta continua de onde parou.</li>
         </ul>
       </div>
       <p className="epf-legenda">Você vê apenas quantos estudantes responderam. Nomes e respostas são confidenciais.</p>

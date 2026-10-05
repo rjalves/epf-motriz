@@ -4,7 +4,7 @@ import { precisaAutorizacao, validarCadastro, type Cadastro } from './cadastro'
 type Props = { escolas: { co_inep: number; nome: string }[]; series: number[]; onEnviar: (c: Cadastro) => Promise<void> }
 
 export default function CadastroForm({ escolas, series, onEnviar }: Props) {
-  const [c, setC] = useState<Cadastro>({ nome: '', co_inep: null, serie: null, nascimento: '', email: '', telefone: '', autorizacao: false })
+  const [c, setC] = useState<Cadastro>({ co_inep: null, serie: null, nascimento: '', email: '', telefone: '', autorizacao: false })
   const [erros, setErros] = useState<Partial<Record<keyof Cadastro, string>>>({})
   const [enviando, setEnviando] = useState(false)
   const muda = <K extends keyof Cadastro>(k: K, v: Cadastro[K]) => {
@@ -27,10 +27,6 @@ export default function CadastroForm({ escolas, series, onEnviar }: Props) {
 
   return (
     <form onSubmit={enviar} noValidate className="epf-pilha" style={{ gap: 18 }}>
-      <label className="epf-campo">Nome completo
-        <input id="campo-nome" className="epf-input" value={c.nome} onChange={(e) => muda('nome', e.target.value)} autoComplete="name" {...invalido('nome')} />
-        {erro('nome')}
-      </label>
       <label className="epf-campo">Sua escola
         <select id="campo-co_inep" className="epf-select" value={c.co_inep ?? ''} {...invalido('co_inep')}
           onChange={(e) => muda('co_inep', e.target.value ? Number(e.target.value) : null)}>
@@ -72,7 +68,7 @@ export default function CadastroForm({ escolas, series, onEnviar }: Props) {
       </label>
       <div className="epf-aviso epf-aviso--sucesso">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z" /></svg>
-        Seus dados ficam separados das suas respostas. Eles servem só para você não responder duas vezes e poder continuar depois.
+        Você não informa seu nome. Data de nascimento, e-mail e telefone ficam separados das suas respostas.
       </div>
       <button className="epf-btn epf-btn--primario epf-btn--g epf-btn--bloco" disabled={enviando} aria-busy={enviando}>
         {enviando ? 'Enviando…' : 'Começar o questionário'}
