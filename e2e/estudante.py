@@ -6,7 +6,6 @@ from util import sql
 sql('delete from participante; delete from sessao;')
 BASE = 'http://localhost:5173'
 OUT = sys.argv[1]
-onze = (datetime.date.today().replace(year=datetime.date.today().year - 11) - datetime.timedelta(days=1)).isoformat()
 ok = []
 def check(nome, cond):
     ok.append((nome, bool(cond))); print(('OK   ' if cond else 'FALHA ') + nome)
@@ -30,7 +29,11 @@ with sync_playwright() as p:
     pg.get_by_role('button', name='Sim, aceito participar').click()
     pg.get_by_label('Sua escola').select_option(label='EM ALFA')
     pg.get_by_label('6º ano').check()
-    pg.get_by_label('Data de nascimento').fill(onze)
+    pg.get_by_label('Sua idade').fill('19'); pg.get_by_role('button', name='Começar o questionário').click()
+    check('idade fora de 9 a 18 é recusada', pg.get_by_text('Confira a sua idade.').is_visible())
+    pg.get_by_label('Sua idade').fill('11.5')
+    check('campo de idade aceita só números inteiros', pg.get_by_label('Sua idade').input_value() == '11')
+    check('cadastro não pede data de nascimento', pg.get_by_label('Data de nascimento').count() == 0)
     check('cadastro não pede o nome do estudante', pg.get_by_label(re.compile('nome', re.I)).count() == 0 and pg.locator('input[autocomplete="name"]').count() == 0)
     check('autorização aparece para menor de 12', pg.get_by_text('Você tem menos de 12 anos.').is_visible())
     pg.get_by_role('button', name='Começar o questionário').click()
@@ -70,11 +73,12 @@ with sync_playwright() as p:
     pg2.goto(f'{BASE}/responder/teste-norte'); pg2.get_by_role('button', name='Começar').click()
     pg2.get_by_role('button', name='Sim, aceito participar').click()
     pg2.get_by_label('Sua escola').select_option(label='EM ALFA')
-    pg2.get_by_label('6º ano').check(); pg2.get_by_label('Data de nascimento').fill(onze)
+    pg2.get_by_label('6º ano').check(); pg2.get_by_label('Sua idade').fill('11')
     pg2.get_by_text('Você tem menos de 12 anos.').click(); pg2.get_by_role('button', name='Começar o questionário').click()
     pg2.get_by_text('Parte 1 de 4').wait_for()
     check('sem identificação, os mesmos dados em outro aparelho iniciam outra resposta', True)
     check('nenhum nome gravado no cadastro', sql("select count(*) from participante where nome is not null") == '0')
+    check('sessão guarda a idade informada', sql("select string_agg(distinct idade::text, ',') from sessao") == '11')
 
     pg2.goto(f'{BASE}/responder/teste-sul'); pg2.get_by_text('A pesquisa está encerrada. Obrigado!').wait_for()
     check('campanha fechada', True)
@@ -86,7 +90,7 @@ with sync_playwright() as p:
     pg3.goto(f'{BASE}/responder/teste-norte'); pg3.get_by_role('button', name='Começar').click()
     pg3.get_by_role('button', name='Sim, aceito participar').click()
     pg3.get_by_label('Sua escola').select_option(label='EM BETA')
-    pg3.get_by_label('9º ano').check(); pg3.get_by_label('Data de nascimento').fill('2012-03-01')
+    pg3.get_by_label('9º ano').check(); pg3.get_by_label('Sua idade').fill('14')
     pg3.get_by_role('button', name='Começar o questionário').click(); pg3.get_by_text('Parte 1 de 4').wait_for()
     pg3.get_by_label('Preta').check(); pg3.get_by_label('Não').check(); pg3.get_by_role('button', name='Salvar e continuar').click()
     pg3.get_by_text('Parte 2 de 4').wait_for()
@@ -107,7 +111,7 @@ with sync_playwright() as p:
     pg4.goto(f'{BASE}/responder/teste-norte'); pg4.get_by_role('button', name='Começar').click()
     pg4.get_by_role('button', name='Sim, aceito participar').click()
     pg4.get_by_label('Sua escola').select_option(label='EM BETA')
-    pg4.get_by_label('9º ano').check(); pg4.get_by_label('Data de nascimento').fill('2012-03-01')
+    pg4.get_by_label('9º ano').check(); pg4.get_by_label('Sua idade').fill('14')
     pg4.get_by_role('button', name='Começar o questionário').click(); pg4.get_by_text('Parte 1 de 4').wait_for()
     pg4.goto(f'{BASE}/responder/teste-norte')
     pg4.get_by_role('heading', name='Olá!').wait_for()

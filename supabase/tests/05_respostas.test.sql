@@ -5,7 +5,7 @@ select plan(13);
 
 create temp table s as select (r->>'sessao_id')::uuid as id, r->>'token' as tk
 from (select iniciar_sessao('teste-norte', 91000001, 6::smallint,
-      (current_date - interval '13 years')::date) as r) x;
+      13) as r) x;
 
 select throws_ok($$select salvar_bloco((select id from s), repeat('0', 64), 'A', '{}')$$, 'P0001', 'sessao_invalida', 'token errado');
 select throws_ok($$select salvar_bloco((select id from s), (select tk from s), 'H', '{"H1":"Concordo"}')$$, 'P0001', 'bloco_invalido', 'bloco do 9º para aluno do 6º');
@@ -23,7 +23,7 @@ select salvar_bloco((select id from s), (select tk from s), 'G', '{"G1":"Não"}'
 select lives_ok($$select concluir((select id from s), (select tk from s))$$, 'conclui sem a aberta opcional (I)');
 select is((select status from sessao where id = (select id from s)), 'concluida', 'status concluída');
 select throws_ok($$select salvar_bloco((select id from s), (select tk from s), 'I', '{"I1":"oi"}')$$, 'P0001', 'sessao_encerrada', 'não edita depois de concluir');
-select lives_ok($$select iniciar_sessao('teste-norte', 91000001, 6::smallint, (current_date - interval '13 years')::date)$$,
+select lives_ok($$select iniciar_sessao('teste-norte', 91000001, 6::smallint, 13)$$,
   'sem identificação, um novo início depois de concluir é outra resposta');
 
 select * from finish();

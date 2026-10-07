@@ -66,7 +66,7 @@ with sync_playwright() as p:
     # Excluir campanha (admin): com respostas, pede o endereço do link digitado; texto errado não apaga.
     sql("update campanha set aberta = true, janela_inicio = current_date - 1, janela_fim = current_date + 30 where slug = 'teste-sul-2';"
         "insert into escola_campanha (campanha_id, co_inep, in_amostra, qt_mat_9) select id, 92000001, true, 10 from campanha where slug = 'teste-sul-2';")
-    sql("select iniciar_sessao('teste-sul-2', 92000001, 9::smallint, (current_date - interval '14 years')::date) from generate_series(1, 2)")
+    sql("select iniciar_sessao('teste-sul-2', 92000001, 9::smallint, 14) from generate_series(1, 2)")
     pg.goto(f'{BASE}/painel'); linha = pg.locator('tr', has_text='Aplicação 2'); linha.wait_for()
     check('admin vê Excluir ao lado de Abrir painel', linha.get_by_role('link', name='Abrir painel').is_visible()
           and linha.get_by_role('button', name=re.compile('^Excluir')).is_visible())

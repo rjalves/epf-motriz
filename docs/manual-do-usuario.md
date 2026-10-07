@@ -163,7 +163,7 @@ Veja as seções [4.2](#42-acompanhar-a-coleta-da-rede) e [4.3](#43-enviar-o-rel
 
 ### 3.8 Consultar dados pessoais dos estudantes
 
-Data de nascimento, e-mails e telefones ficam separados das respostas (o estudante não informa o nome). Só o admin consulta esses dados, pela equipe técnica, e cada consulta fica registrada em auditoria. Use apenas quando houver necessidade real, como um pedido de exclusão feito pelo titular ou pelo responsável.
+E-mails e telefones ficam separados das respostas (o estudante não informa o nome nem a data de nascimento). Só o admin consulta esses dados, pela equipe técnica, e cada consulta fica registrada em auditoria. Use apenas quando houver necessidade real, como um pedido de exclusão feito pelo titular ou pelo responsável.
 
 ---
 
@@ -276,7 +276,7 @@ O link da pesquisa não aparece para o pesquisador.
 
 1. No painel da campanha, clique em **Exportar respostas (pseudonimizadas)**.
 2. A plataforma baixa o arquivo `EPF_<campanha>_respostas.json`. Cada linha é a resposta de um estudante a um item.
-3. O arquivo tem um código de sessão no lugar do nome, e a idade no lugar da data de nascimento. Não há nome, e-mail nem telefone.
+3. O arquivo tem um código de sessão e a idade informada pelo estudante. Não há e-mail nem telefone.
 4. Cada exportação fica registrada em auditoria.
 
 A exportação traz todas as respostas da campanha, inclusive as de coletas grandes, que são baixadas em partes automaticamente.
@@ -297,7 +297,7 @@ O estudante não precisa de login, só do link ou do QR code que a escola divulg
 4. **Seus dados**: preencha
    - **Escola** (escolha na lista);
    - **Em que ano você estuda?**;
-   - **Data de nascimento**;
+   - **Sua idade** (em anos completos, só o número; de 9 a 18);
    - **E-mail** e **Telefone**: opcionais, podem ficar em branco.
 5. **Menores de 12 anos**: confirme que o pai, a mãe ou o responsável autorizou a participação. Sem essa confirmação não é possível seguir.
 6. Toque em **Começar o questionário**.
@@ -350,7 +350,7 @@ O estudante não precisa de login, só do link ou do QR code que a escola divulg
 
 ## 10. Privacidade
 
-- As respostas são **pseudonimizadas**: o estudante não informa o nome; data de nascimento, e-mail e telefone (opcionais) ficam guardados separados das respostas. As telas do painel mostram só contagens, e a exportação usa um código de sessão.
+- As respostas são **pseudonimizadas**: o estudante não informa o nome nem a data de nascimento, só a idade; e-mail e telefone (opcionais) ficam guardados separados das respostas. As telas do painel mostram só contagens, e a exportação usa um código de sessão.
 - Escolas, regionais e secretarias **nunca** veem nomes nem respostas individuais.
 - Apenas o admin Motriz pode consultar os dados pessoais, e cada consulta é registrada.
 - Convites, desativações de acesso e exportações também ficam registrados em auditoria.

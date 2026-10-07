@@ -4,7 +4,7 @@ create extension if not exists pgtap with schema extensions;
 set local search_path = public, extensions;
 select plan(7);
 
-create temp table s as select (iniciar_sessao('teste-norte', 91000001, 9::smallint, (current_date - interval '14 years')::date) ->> 'sessao_id')::uuid as id;
+create temp table s as select (iniciar_sessao('teste-norte', 91000001, 9::smallint, 14) ->> 'sessao_id')::uuid as id;
 grant select on s to authenticated;
 
 set local role authenticated;

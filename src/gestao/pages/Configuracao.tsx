@@ -192,7 +192,7 @@ export default function Configuracao() {
         </div>
       </div>
       {id && c.slug && <LinkPesquisa slug={c.slug} />}
-      <div className="epf-aviso epf-aviso--sucesso">Cadastro do estudante: nome, escola, ano e data de nascimento obrigatórios; e-mail e telefone opcionais. Os dados pessoais ficam separados das respostas e só o admin Motriz consulta, com registro em auditoria.</div>
+      <div className="epf-aviso epf-aviso--sucesso">Cadastro do estudante: escola, ano e idade obrigatórios; e-mail e telefone opcionais. O estudante não informa o nome. Os dados pessoais ficam separados das respostas e só o admin Motriz consulta, com registro em auditoria.</div>
     </div>
   )
 }

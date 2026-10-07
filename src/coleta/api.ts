@@ -12,7 +12,7 @@ const MENSAGENS: Record<string, string> = {
   campanha_fechada: 'Esta pesquisa não está aberta agora.',
   escola_invalida: 'Escolha a sua escola na lista.',
   serie_invalida: 'Esta pesquisa é para outros anos escolares.',
-  idade_invalida: 'Confira a sua data de nascimento.',
+  idade_invalida: 'Confira a sua idade.',
   autorizacao_necessaria: 'Para responder, seu responsável precisa ter autorizado.',
   sessao_invalida: 'Sua sessão expirou. Toque em Começar para responder de novo.',
   sessao_encerrada: 'Esta resposta já foi enviada.',
@@ -46,7 +46,7 @@ export async function carregar(slug: string) {
 
 export async function iniciar(slug: string, c: Cadastro) {
   const s = await rpc<Sessao>('iniciar_sessao', {
-    p_slug: slug, p_co_inep: c.co_inep, p_serie: c.serie, p_nascimento: c.nascimento,
+    p_slug: slug, p_co_inep: c.co_inep, p_serie: c.serie, p_idade: Number(c.idade.trim()),
     p_email: c.email || null, p_telefone: c.telefone || null, p_autorizacao_responsavel: c.autorizacao,
   })
   guardar(slug, s)

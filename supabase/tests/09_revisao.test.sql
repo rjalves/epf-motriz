@@ -5,7 +5,7 @@ set local search_path = public, extensions;
 select plan(14);
 
 -- Sessão com token conhecido
-create temp table bruno as select (iniciar_sessao('teste-norte', 91000001, 9::smallint, (current_date - interval '14 years')::date) ->> 'sessao_id')::uuid as id;
+create temp table bruno as select (iniciar_sessao('teste-norte', 91000001, 9::smallint, 14) ->> 'sessao_id')::uuid as id;
 update sessao set token_hash = digest(decode(repeat('cd', 32), 'hex'), 'sha256') where id = (select id from bruno);
 
 select ok((select assentiu_em is not null from sessao where id = (select id from bruno)), 'sessão registra o momento do assentimento');
